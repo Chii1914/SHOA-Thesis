@@ -190,5 +190,6 @@ class PSO:
         self.random()
         self.evolve()
 
-# Ejecutar
-PSO().solve()
+if __name__ == "__main__":
+    # Ejecutar
+    PSO().solve()
