@@ -16,7 +16,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--function", default="F12022", help="Opfunu class name, e.g. F12022")
     parser.add_argument("--ndim", type=int, default=10, help="Problem dimension")
     parser.add_argument("--pop-size", type=int, default=30, help="Population size")
-    parser.add_argument("--max-iter", type=int, default=200, help="Maximum iterations")
+    parser.add_argument("--max-iter", type=int, default=1000, help="Maximum iterations")
     parser.add_argument("--window-size", type=int, default=15, help="Sliding window size")
     parser.add_argument("--epsilon", type=float, default=1e-10, help="Trigger threshold for std(window)")
     parser.add_argument("--cooldown", type=int, default=20, help="Cooldown iterations after rescue")

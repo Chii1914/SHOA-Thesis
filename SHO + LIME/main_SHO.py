@@ -14,7 +14,7 @@ def main() -> None:
     # Fine-tuned single instance: keep high sensitivity while improving late-stage escape quality.
     popsize = 30  # Slightly higher diversity without losing plateau-prone behavior
     max_iter = 500  # Extra budget to exploit after rescues
-    f_name = "F92022"  # CEC class name in Opfunu (e.g. F12022, F22022, ... , F122022)
+    f_name = "F42022"  # CEC class name in Opfunu (e.g. F12022, F22022, ... , F122022)
     dim_req = 10  # Desired dimensionality for the chosen CEC function
 
 
@@ -24,7 +24,7 @@ def main() -> None:
         pop_size=popsize,
         max_iter=max_iter,
         window_size=15,
-        epsilon_stagnation=2e-4,
+        epsilon_stagnation=2e-2,
         cooldown_iters=14,
         lime_num_samples=1600,
         importance_threshold=0.05,

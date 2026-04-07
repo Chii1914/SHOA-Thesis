@@ -15,6 +15,7 @@ import numpy as np
 from SHO_LIME_Controller import SHOXAIConfig, SHO_with_lime_controller, build_opfunu_cec_objective
 
 CEC2022_CLASS_NAMES = tuple(f"F{i}2022" for i in range(1, 13))
+LIME_FEATURE_NAMES = ("r1", "mag_browniano", "mag_levy", "r2", "mag_predacion")
 
 
 def parse_args() -> argparse.Namespace:
@@ -153,119 +154,248 @@ def main() -> None:
     summary_rows: list[dict] = []
     skipped_rows: list[dict] = []
 
+    full_output_path = out_root / "full_output.csv"
+    full_output_fieldnames = [
+        "function",
+        "dimension",
+        "run_id",
+        "seed",
+        "iteration",
+        "best_fitness",
+        "global_optimum",
+        "error_to_optimum",
+        "window_size",
+        "window_std",
+        "trigger_candidate",
+        "diagnostics_invoked",
+        "diagnosis_status",
+        "diagnosis_pred_delta",
+        "diagnosis_fidelity",
+        "rescue_applied",
+        "rescue_count_cumulative",
+        "cooldown_counter",
+    ]
+
+    lime_contributions_path = out_root / "lime_contributions.csv"
+    lime_contributions_fieldnames = [
+        "function",
+        "dimension",
+        "run_id",
+        "seed",
+        "diagnosis_id",
+        "diagnosis_iteration",
+        "diagnosis_status",
+        "pred_delta",
+        "fidelity",
+        "strong_stochastic_importance",
+        "low_expected_improvement",
+        "weight_r1",
+        "weight_mag_browniano",
+        "weight_mag_levy",
+        "weight_r2",
+        "weight_mag_predacion",
+        "abs_weight_r1",
+        "abs_weight_mag_browniano",
+        "abs_weight_mag_levy",
+        "abs_weight_r2",
+        "abs_weight_mag_predacion",
+    ]
+
     total_jobs = len(functions) * len(dims) * args.runs
     finished_jobs = 0
 
-    for dim in dims:
-        for function_name in functions:
-            print(f"\n=== Benchmark {function_name} | dim={dim} ===")
+    with (
+        full_output_path.open("w", newline="", encoding="utf-8") as full_output_file,
+        lime_contributions_path.open("w", newline="", encoding="utf-8") as lime_contributions_file,
+    ):
+        full_output_writer = csv.DictWriter(full_output_file, fieldnames=full_output_fieldnames)
+        full_output_writer.writeheader()
+        lime_contributions_writer = csv.DictWriter(
+            lime_contributions_file, fieldnames=lime_contributions_fieldnames
+        )
+        lime_contributions_writer.writeheader()
 
-            try:
-                lb, ub, used_dim, objective, problem = build_opfunu_cec_objective(function_name, dim)
-            except Exception as exc:
-                skipped_rows.append(
-                    {
-                        "function": function_name,
-                        "requested_dim": dim,
-                        "error": str(exc),
-                    }
-                )
-                print(f"SKIP {function_name} dim={dim}: {exc}")
-                if args.stop_on_error:
-                    raise
-                continue
+        for dim in dims:
+            for function_name in functions:
+                print(f"\n=== Benchmark {function_name} | dim={dim} ===")
 
-            f_global = _as_float_scalar(getattr(problem, "f_global", np.nan))
-            per_case_best: list[float] = []
-            per_case_runtime: list[float] = []
-            per_case_rescues: list[int] = []
-            per_case_diagnostics: list[int] = []
-            per_case_positive_diag: list[int] = []
+                try:
+                    lb, ub, used_dim, objective, problem = build_opfunu_cec_objective(function_name, dim)
+                except Exception as exc:
+                    skipped_rows.append(
+                        {
+                            "function": function_name,
+                            "requested_dim": dim,
+                            "error": str(exc),
+                        }
+                    )
+                    print(f"SKIP {function_name} dim={dim}: {exc}")
+                    if args.stop_on_error:
+                        raise
+                    continue
 
-            for run_idx in range(1, args.runs + 1):
-                seed = args.seed_start + run_idx - 1
-                cfg = SHOXAIConfig(
-                    pop_size=args.pop_size,
-                    max_iter=args.max_iter,
-                    window_size=args.window_size,
-                    epsilon_stagnation=args.epsilon,
-                    cooldown_iters=args.cooldown,
-                    lime_num_samples=args.lime_samples,
-                    importance_threshold=args.importance_threshold,
-                    delta_tolerance=args.delta_tolerance,
-                    fidelity_threshold=args.fidelity_threshold,
-                    rescue_mode=args.rescue_mode,
-                    rescue_eta=args.rescue_eta,
-                    rescue_levy_scale=args.rescue_levy_scale,
-                    seed=seed,
-                )
+                f_global = _as_float_scalar(getattr(problem, "f_global", np.nan))
+                per_case_best: list[float] = []
+                per_case_runtime: list[float] = []
+                per_case_rescues: list[int] = []
+                per_case_diagnostics: list[int] = []
+                per_case_positive_diag: list[int] = []
 
-                t0 = time.time()
-                result = SHO_with_lime_controller(objective, lb, ub, used_dim, cfg)
-                runtime = time.time() - t0
+                for run_idx in range(1, args.runs + 1):
+                    seed = args.seed_start + run_idx - 1
+                    cfg = SHOXAIConfig(
+                        pop_size=args.pop_size,
+                        max_iter=args.max_iter,
+                        window_size=args.window_size,
+                        epsilon_stagnation=args.epsilon,
+                        cooldown_iters=args.cooldown,
+                        lime_num_samples=args.lime_samples,
+                        importance_threshold=args.importance_threshold,
+                        delta_tolerance=args.delta_tolerance,
+                        fidelity_threshold=args.fidelity_threshold,
+                        rescue_mode=args.rescue_mode,
+                        rescue_eta=args.rescue_eta,
+                        rescue_levy_scale=args.rescue_levy_scale,
+                        seed=seed,
+                    )
 
-                positive_diag_count = sum(
-                    1 for diag in result.diagnostics_log if diag.get("status") == "POSITIVE_STAGNATION"
-                )
-                diagnostics_invocation_count = len(result.diagnostics_invocation_iterations)
-                best_fitness = float(result.best_fitness)
-                error_to_optimum = best_fitness - f_global if np.isfinite(f_global) else float("nan")
+                    t0 = time.time()
+                    result = SHO_with_lime_controller(objective, lb, ub, used_dim, cfg)
+                    runtime = time.time() - t0
 
-                run_rows.append(
+                    positive_diag_count = sum(
+                        1 for diag in result.diagnostics_log if diag.get("status") == "POSITIVE_STAGNATION"
+                    )
+                    diagnostics_invocation_count = len(result.diagnostics_invocation_iterations)
+                    best_fitness = float(result.best_fitness)
+                    error_to_optimum = best_fitness - f_global if np.isfinite(f_global) else float("nan")
+
+                    run_rows.append(
+                        {
+                            "function": function_name,
+                            "dimension": used_dim,
+                            "run_id": run_idx,
+                            "seed": seed,
+                            "best_fitness": best_fitness,
+                            "global_optimum": f_global,
+                            "error_to_optimum": error_to_optimum,
+                            "rescues_applied": int(result.rescue_count),
+                            "diagnostics_invoked": len(result.diagnostics_log),
+                            "diagnostics_invocation_count": diagnostics_invocation_count,
+                            "positive_diagnosis_count": positive_diag_count,
+                            "runtime_sec": runtime,
+                            "diagnostics_invocation_iterations": ";".join(
+                                str(i) for i in result.diagnostics_invocation_iterations
+                            ),
+                        }
+                    )
+
+                    for diag_idx, diag in enumerate(result.diagnostics_log, start=1):
+                        weights = diag.get("weights", {})
+                        w_r1 = float(weights.get("r1", 0.0))
+                        w_brown = float(weights.get("mag_browniano", 0.0))
+                        w_levy = float(weights.get("mag_levy", 0.0))
+                        w_r2 = float(weights.get("r2", 0.0))
+                        w_pred = float(weights.get("mag_predacion", 0.0))
+
+                        lime_contributions_writer.writerow(
+                            {
+                                "function": function_name,
+                                "dimension": used_dim,
+                                "run_id": run_idx,
+                                "seed": seed,
+                                "diagnosis_id": diag_idx,
+                                "diagnosis_iteration": int(diag.get("iteration", 0)),
+                                "diagnosis_status": str(diag.get("status", "UNKNOWN")),
+                                "pred_delta": float(diag.get("pred_delta", np.nan)),
+                                "fidelity": float(diag.get("fidelity", np.nan)),
+                                "strong_stochastic_importance": bool(
+                                    diag.get("strong_stochastic_importance", False)
+                                ),
+                                "low_expected_improvement": bool(
+                                    diag.get("low_expected_improvement", False)
+                                ),
+                                "weight_r1": w_r1,
+                                "weight_mag_browniano": w_brown,
+                                "weight_mag_levy": w_levy,
+                                "weight_r2": w_r2,
+                                "weight_mag_predacion": w_pred,
+                                "abs_weight_r1": abs(w_r1),
+                                "abs_weight_mag_browniano": abs(w_brown),
+                                "abs_weight_mag_levy": abs(w_levy),
+                                "abs_weight_r2": abs(w_r2),
+                                "abs_weight_mag_predacion": abs(w_pred),
+                            }
+                        )
+
+                    rescue_count_cumulative = 0
+                    for iter_row in result.iteration_log:
+                        if bool(iter_row.get("rescue_applied", False)):
+                            rescue_count_cumulative += 1
+
+                        iter_best_fitness = float(iter_row.get("best_fitness", np.nan))
+                        iter_error_to_optimum = (
+                            iter_best_fitness - f_global if np.isfinite(f_global) else float("nan")
+                        )
+
+                        full_output_writer.writerow(
+                            {
+                                "function": function_name,
+                                "dimension": used_dim,
+                                "run_id": run_idx,
+                                "seed": seed,
+                                "iteration": int(iter_row.get("iteration", 0)),
+                                "best_fitness": iter_best_fitness,
+                                "global_optimum": f_global,
+                                "error_to_optimum": iter_error_to_optimum,
+                                "window_size": int(iter_row.get("window_size", 0)),
+                                "window_std": float(iter_row.get("window_std", np.nan)),
+                                "trigger_candidate": bool(iter_row.get("trigger_candidate", False)),
+                                "diagnostics_invoked": bool(iter_row.get("diagnostics_invoked", False)),
+                                "diagnosis_status": str(iter_row.get("diagnosis_status", "NONE")),
+                                "diagnosis_pred_delta": float(iter_row.get("diagnosis_pred_delta", np.nan)),
+                                "diagnosis_fidelity": float(iter_row.get("diagnosis_fidelity", np.nan)),
+                                "rescue_applied": bool(iter_row.get("rescue_applied", False)),
+                                "rescue_count_cumulative": rescue_count_cumulative,
+                                "cooldown_counter": int(iter_row.get("cooldown_counter", 0)),
+                            }
+                        )
+
+                    per_case_best.append(best_fitness)
+                    per_case_runtime.append(runtime)
+                    per_case_rescues.append(int(result.rescue_count))
+                    per_case_diagnostics.append(len(result.diagnostics_log))
+                    per_case_positive_diag.append(positive_diag_count)
+
+                    finished_jobs += 1
+                    print(
+                        f"[{finished_jobs}/{total_jobs}] {function_name} d={used_dim} run={run_idx}/{args.runs} "
+                        f"seed={seed} best={best_fitness:.6e} rescues={result.rescue_count} "
+                        f"diag={len(result.diagnostics_log)} time={runtime:.2f}s"
+                    )
+
+                summary_rows.append(
                     {
                         "function": function_name,
                         "dimension": used_dim,
-                        "run_id": run_idx,
-                        "seed": seed,
-                        "best_fitness": best_fitness,
+                        "runs": args.runs,
                         "global_optimum": f_global,
-                        "error_to_optimum": error_to_optimum,
-                        "rescues_applied": int(result.rescue_count),
-                        "diagnostics_invoked": len(result.diagnostics_log),
-                        "diagnostics_invocation_count": diagnostics_invocation_count,
-                        "positive_diagnosis_count": positive_diag_count,
-                        "runtime_sec": runtime,
-                        "diagnostics_invocation_iterations": ";".join(
-                            str(i) for i in result.diagnostics_invocation_iterations
+                        "best": float(min(per_case_best)),
+                        "worst": float(max(per_case_best)),
+                        "mean": float(statistics.mean(per_case_best)),
+                        "median": float(statistics.median(per_case_best)),
+                        "std": _compute_std(per_case_best),
+                        "mean_error_to_optimum": (
+                            float(statistics.mean([value - f_global for value in per_case_best]))
+                            if np.isfinite(f_global)
+                            else float("nan")
                         ),
+                        "mean_runtime_sec": float(statistics.mean(per_case_runtime)),
+                        "mean_rescues": float(statistics.mean(per_case_rescues)),
+                        "mean_diagnostics_invoked": float(statistics.mean(per_case_diagnostics)),
+                        "mean_positive_diagnosis": float(statistics.mean(per_case_positive_diag)),
                     }
                 )
-
-                per_case_best.append(best_fitness)
-                per_case_runtime.append(runtime)
-                per_case_rescues.append(int(result.rescue_count))
-                per_case_diagnostics.append(len(result.diagnostics_log))
-                per_case_positive_diag.append(positive_diag_count)
-
-                finished_jobs += 1
-                print(
-                    f"[{finished_jobs}/{total_jobs}] {function_name} d={used_dim} run={run_idx}/{args.runs} "
-                    f"seed={seed} best={best_fitness:.6e} rescues={result.rescue_count} "
-                    f"diag={len(result.diagnostics_log)} time={runtime:.2f}s"
-                )
-
-            summary_rows.append(
-                {
-                    "function": function_name,
-                    "dimension": used_dim,
-                    "runs": args.runs,
-                    "global_optimum": f_global,
-                    "best": float(min(per_case_best)),
-                    "worst": float(max(per_case_best)),
-                    "mean": float(statistics.mean(per_case_best)),
-                    "median": float(statistics.median(per_case_best)),
-                    "std": _compute_std(per_case_best),
-                    "mean_error_to_optimum": (
-                        float(statistics.mean([value - f_global for value in per_case_best]))
-                        if np.isfinite(f_global)
-                        else float("nan")
-                    ),
-                    "mean_runtime_sec": float(statistics.mean(per_case_runtime)),
-                    "mean_rescues": float(statistics.mean(per_case_rescues)),
-                    "mean_diagnostics_invoked": float(statistics.mean(per_case_diagnostics)),
-                    "mean_positive_diagnosis": float(statistics.mean(per_case_positive_diag)),
-                }
-            )
 
     rank_rows: list[dict] = []
     for dim in dims:
@@ -365,6 +495,10 @@ def main() -> None:
             "rescue_eta": args.rescue_eta,
             "rescue_levy_scale": args.rescue_levy_scale,
         },
+        "traceability_files": {
+            "full_output_csv": full_output_path.name,
+            "lime_contributions_csv": lime_contributions_path.name,
+        },
     }
     with config_path.open("w", encoding="utf-8") as f:
         json.dump(config_payload, f, indent=2)
@@ -372,6 +506,8 @@ def main() -> None:
     print("\nBenchmark terminado.")
     if run_rows:
         print(f"Runs raw CSV: {runs_path}")
+    print(f"Full output CSV: {full_output_path}")
+    print(f"LIME contributions CSV: {lime_contributions_path}")
     if summary_rows:
         print(f"Summary CSV: {summary_path}")
         print(f"Ranking CSV: {ranking_path}")

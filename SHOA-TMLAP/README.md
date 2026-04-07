@@ -5,6 +5,7 @@ Implementacion de TMLAP resuelta con Sea-Horse Optimizer (SHOA), reutilizando el
 ## Contenido
 
 - `SHOA-TMLAP.py`: Solver SHOA para el mismo problema definido en `PSO-TMLAP/PSO-TMLAP.py`.
+- `SHOA-LIME-TMLAP.py`: Solver SHOA+LIME para el mismo problema TMLAP.
 - `compare_pso_vs_shoa.py`: Comparacion automatica PSO vs SHOA con mismas semillas y estadisticas.
 
 ## Idea principal
@@ -23,6 +24,26 @@ Desde la raiz del repositorio:
 cd SHOA-TMLAP
 python SHOA-TMLAP.py
 ```
+
+## Ejecucion SHOA+LIME
+
+Desde la raiz del repositorio:
+
+```bash
+cd SHOA-TMLAP
+python SHOA-LIME-TMLAP.py
+```
+
+Parametros utiles:
+
+```bash
+python SHOA-LIME-TMLAP.py --max-iter 25 --population 10 --seed 7 --lime-samples 800
+```
+
+Nota:
+
+- El solver reporta `Best fitness observado` (mejor valor visto durante toda la corrida).
+- Tambien imprime `Fitness del estado final del controlador` para trazabilidad del estado final.
 
 ## Salida
 

@@ -1,3 +1,0 @@
-function,dimension,run_id,seed,best_fitness,global_optimum,error_to_optimum,rescues_applied,diagnostics_invoked,diagnostics_invocation_count,positive_diagnosis_count,runtime_sec,diagnostics_invocation_iterations
-F12022,10,1,1,4555.155278961834,300.0,4255.155278961834,0,0,0,0,0.03659391403198242,
-F22022,10,1,1,647.1931727460388,400.0,247.19317274603884,0,0,0,0,0.016330957412719727,

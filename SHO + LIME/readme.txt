@@ -39,7 +39,13 @@ exports per-iteration logs, per-run summaries, and aggregate statistics.
 
 run_cec2022_benchmark.py
 Benchmark runner for CEC 2022 (F1..F12) that executes multiple runs per
-function/dimension and exports raw runs, summary tables, rankings, and config.
+function/dimension and exports raw runs, full iteration traceability
+(full_output.csv), LIME contributions (lime_contributions.csv),
+summary tables, rankings, and config.
+
+run_cec2022_benchmark_shoa_puro.py
+Benchmark runner for CEC 2022 (F1..F12) with SHOA puro (sin LIME), keeping
+the same output structure for side-by-side comparison.
 
 Dependencies:
 - numpy
@@ -60,5 +66,7 @@ Examples:
        python run_multiseed_sho_lime.py --function F112022 --ndim 20 --runs 50 --seed-start 1 --max-iter 15000 --pop-size 60
 - CEC2022 benchmark paper-like defaults (30 runs, pop=30, max_iter=500):
        python run_cec2022_benchmark.py --functions all --dims 10 --runs 30
+- CEC2022 benchmark SHOA puro (same protocol, no LIME):
+       python run_cec2022_benchmark_shoa_puro.py --functions all --dims 10 --runs 30
 - Quick smoke test over two CEC2022 functions:
        python run_cec2022_benchmark.py --functions F12022,F22022 --dims 10 --runs 2 --max-iter 40 --lime-samples 400
