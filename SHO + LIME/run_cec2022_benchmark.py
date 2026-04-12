@@ -22,7 +22,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
             "Ejecuta benchmark SHO+LIME sobre CEC2022 (F1..F12) con protocolo "
-            "tipo paper de SHO por defecto."
+            "SHO y parametros agresivos por defecto para el controlador LIME."
         )
     )
     parser.add_argument(
@@ -43,20 +43,20 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-iter", type=int, default=500)
 
     # Configuracion SHO + LIME (editable)
-    parser.add_argument("--window-size", type=int, default=15)
-    parser.add_argument("--epsilon", type=float, default=2e-4)
-    parser.add_argument("--cooldown", type=int, default=14)
-    parser.add_argument("--lime-samples", type=int, default=1600)
-    parser.add_argument("--importance-threshold", type=float, default=0.05)
-    parser.add_argument("--delta-tolerance", type=float, default=2e-5)
-    parser.add_argument("--fidelity-threshold", type=float, default=0.15)
+    parser.add_argument("--window-size", type=int, default=10)
+    parser.add_argument("--epsilon", type=float, default=8e-4)
+    parser.add_argument("--cooldown", type=int, default=6)
+    parser.add_argument("--lime-samples", type=int, default=1200)
+    parser.add_argument("--importance-threshold", type=float, default=0.035)
+    parser.add_argument("--delta-tolerance", type=float, default=8e-5)
+    parser.add_argument("--fidelity-threshold", type=float, default=0.10)
     parser.add_argument(
         "--rescue-mode",
         choices=["levy_teleport", "leader_repulsion"],
         default="levy_teleport",
     )
     parser.add_argument("--rescue-eta", type=float, default=1.0)
-    parser.add_argument("--rescue-levy-scale", type=float, default=0.14)
+    parser.add_argument("--rescue-levy-scale", type=float, default=0.30)
 
     parser.add_argument(
         "--output-dir",
@@ -174,6 +174,19 @@ def main() -> None:
         "rescue_applied",
         "rescue_count_cumulative",
         "cooldown_counter",
+        "diagnosis_id",
+        "strong_stochastic_importance",
+        "low_expected_improvement",
+        "weight_r1",
+        "weight_mag_browniano",
+        "weight_mag_levy",
+        "weight_r2",
+        "weight_mag_predacion",
+        "abs_weight_r1",
+        "abs_weight_mag_browniano",
+        "abs_weight_mag_levy",
+        "abs_weight_r2",
+        "abs_weight_mag_predacion",
     ]
 
     lime_contributions_path = out_root / "lime_contributions.csv"
@@ -290,6 +303,8 @@ def main() -> None:
                         }
                     )
 
+                    diagnosis_by_iteration: dict[int, dict] = {}
+
                     for diag_idx, diag in enumerate(result.diagnostics_log, start=1):
                         weights = diag.get("weights", {})
                         w_r1 = float(weights.get("r1", 0.0))
@@ -298,6 +313,28 @@ def main() -> None:
                         w_r2 = float(weights.get("r2", 0.0))
                         w_pred = float(weights.get("mag_predacion", 0.0))
 
+                        diagnosis_iteration = int(diag.get("iteration", 0))
+                        strong_stochastic_importance = bool(
+                            diag.get("strong_stochastic_importance", False)
+                        )
+                        low_expected_improvement = bool(diag.get("low_expected_improvement", False))
+
+                        diagnosis_by_iteration[diagnosis_iteration] = {
+                            "diagnosis_id": diag_idx,
+                            "strong_stochastic_importance": strong_stochastic_importance,
+                            "low_expected_improvement": low_expected_improvement,
+                            "weight_r1": w_r1,
+                            "weight_mag_browniano": w_brown,
+                            "weight_mag_levy": w_levy,
+                            "weight_r2": w_r2,
+                            "weight_mag_predacion": w_pred,
+                            "abs_weight_r1": abs(w_r1),
+                            "abs_weight_mag_browniano": abs(w_brown),
+                            "abs_weight_mag_levy": abs(w_levy),
+                            "abs_weight_r2": abs(w_r2),
+                            "abs_weight_mag_predacion": abs(w_pred),
+                        }
+
                         lime_contributions_writer.writerow(
                             {
                                 "function": function_name,
@@ -305,16 +342,12 @@ def main() -> None:
                                 "run_id": run_idx,
                                 "seed": seed,
                                 "diagnosis_id": diag_idx,
-                                "diagnosis_iteration": int(diag.get("iteration", 0)),
+                                "diagnosis_iteration": diagnosis_iteration,
                                 "diagnosis_status": str(diag.get("status", "UNKNOWN")),
                                 "pred_delta": float(diag.get("pred_delta", np.nan)),
                                 "fidelity": float(diag.get("fidelity", np.nan)),
-                                "strong_stochastic_importance": bool(
-                                    diag.get("strong_stochastic_importance", False)
-                                ),
-                                "low_expected_improvement": bool(
-                                    diag.get("low_expected_improvement", False)
-                                ),
+                                "strong_stochastic_importance": strong_stochastic_importance,
+                                "low_expected_improvement": low_expected_improvement,
                                 "weight_r1": w_r1,
                                 "weight_mag_browniano": w_brown,
                                 "weight_mag_levy": w_levy,
@@ -333,10 +366,12 @@ def main() -> None:
                         if bool(iter_row.get("rescue_applied", False)):
                             rescue_count_cumulative += 1
 
+                        iteration = int(iter_row.get("iteration", 0))
                         iter_best_fitness = float(iter_row.get("best_fitness", np.nan))
                         iter_error_to_optimum = (
                             iter_best_fitness - f_global if np.isfinite(f_global) else float("nan")
                         )
+                        iter_diag = diagnosis_by_iteration.get(iteration, {})
 
                         full_output_writer.writerow(
                             {
@@ -344,7 +379,7 @@ def main() -> None:
                                 "dimension": used_dim,
                                 "run_id": run_idx,
                                 "seed": seed,
-                                "iteration": int(iter_row.get("iteration", 0)),
+                                "iteration": iteration,
                                 "best_fitness": iter_best_fitness,
                                 "global_optimum": f_global,
                                 "error_to_optimum": iter_error_to_optimum,
@@ -358,6 +393,31 @@ def main() -> None:
                                 "rescue_applied": bool(iter_row.get("rescue_applied", False)),
                                 "rescue_count_cumulative": rescue_count_cumulative,
                                 "cooldown_counter": int(iter_row.get("cooldown_counter", 0)),
+                                "diagnosis_id": int(iter_diag.get("diagnosis_id", 0)),
+                                "strong_stochastic_importance": bool(
+                                    iter_diag.get("strong_stochastic_importance", False)
+                                ),
+                                "low_expected_improvement": bool(
+                                    iter_diag.get("low_expected_improvement", False)
+                                ),
+                                "weight_r1": float(iter_diag.get("weight_r1", np.nan)),
+                                "weight_mag_browniano": float(
+                                    iter_diag.get("weight_mag_browniano", np.nan)
+                                ),
+                                "weight_mag_levy": float(iter_diag.get("weight_mag_levy", np.nan)),
+                                "weight_r2": float(iter_diag.get("weight_r2", np.nan)),
+                                "weight_mag_predacion": float(
+                                    iter_diag.get("weight_mag_predacion", np.nan)
+                                ),
+                                "abs_weight_r1": float(iter_diag.get("abs_weight_r1", np.nan)),
+                                "abs_weight_mag_browniano": float(
+                                    iter_diag.get("abs_weight_mag_browniano", np.nan)
+                                ),
+                                "abs_weight_mag_levy": float(iter_diag.get("abs_weight_mag_levy", np.nan)),
+                                "abs_weight_r2": float(iter_diag.get("abs_weight_r2", np.nan)),
+                                "abs_weight_mag_predacion": float(
+                                    iter_diag.get("abs_weight_mag_predacion", np.nan)
+                                ),
                             }
                         )
 
