@@ -53,7 +53,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--rescue-mode",
         choices=["levy_teleport", "leader_repulsion"],
-        default="levy_teleport",
+        default="leader_repulsion",
     )
     parser.add_argument("--rescue-eta", type=float, default=1.0)
     parser.add_argument("--rescue-levy-scale", type=float, default=0.30)
