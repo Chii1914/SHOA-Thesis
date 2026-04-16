@@ -1,0 +1,62 @@
+{
+  "base_args": {
+    "instances": "all",
+    "instance_dir": ".",
+    "runs": 30,
+    "seed_start": 1,
+    "pop_size": 30,
+    "max_iter": 500,
+    "window_size": 10,
+    "epsilon": 0.0008,
+    "cooldown": 6,
+    "lime_samples": 1200,
+    "importance_threshold": 0.035,
+    "delta_tolerance": 0.00008,
+    "fidelity_threshold": 0.1,
+    "rescue_mode": "leader_repulsion",
+    "rescue_eta": 1.0,
+    "rescue_levy_scale": 0.3,
+    "rescue_patience_iters": 25,
+    "rescue_min_improvement": 0.0,
+    "enforce_elite_archive": true,
+    "output_dir": "results/benchmark_logs"
+  },
+  "profiles": {
+    "soft": {
+      "window_size": 12,
+      "epsilon": 0.0004,
+      "cooldown": 10,
+      "importance_threshold": 0.05,
+      "delta_tolerance": 0.00015,
+      "fidelity_threshold": 0.12,
+      "rescue_eta": 0.7,
+      "rescue_levy_scale": 0.2,
+      "rescue_patience_iters": 35,
+      "rescue_min_improvement": 0.00000001
+    },
+    "medium": {
+      "window_size": 10,
+      "epsilon": 0.0008,
+      "cooldown": 6,
+      "importance_threshold": 0.035,
+      "delta_tolerance": 0.00008,
+      "fidelity_threshold": 0.1,
+      "rescue_eta": 1.0,
+      "rescue_levy_scale": 0.3,
+      "rescue_patience_iters": 25,
+      "rescue_min_improvement": 0.0
+    },
+    "hard": {
+      "window_size": 8,
+      "epsilon": 0.0012,
+      "cooldown": 3,
+      "importance_threshold": 0.02,
+      "delta_tolerance": 0.00004,
+      "fidelity_threshold": 0.08,
+      "rescue_eta": 1.4,
+      "rescue_levy_scale": 0.45,
+      "rescue_patience_iters": 15,
+      "rescue_min_improvement": 0.0
+    }
+  }
+}
