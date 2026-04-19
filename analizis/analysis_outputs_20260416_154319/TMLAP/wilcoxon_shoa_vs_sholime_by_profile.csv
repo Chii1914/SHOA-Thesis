@@ -1,0 +1,10 @@
+function,dimension,profile,n_pairs,wilcoxon_stat,p_value,decision_0.05,median_delta_sholime_minus_shoa,mean_delta_sholime_minus_shoa,trend
+1.instancia_simple,6,hard,30,232.5,1.0,No rechazar H0,0.0,0.0,Empate (mediana delta = 0)
+1.instancia_simple,6,medium,30,232.5,1.0,No rechazar H0,0.0,0.0,Empate (mediana delta = 0)
+1.instancia_simple,6,soft,30,232.5,1.0,No rechazar H0,0.0,0.0,Empate (mediana delta = 0)
+2.instancia_mediana,12,hard,30,232.5,1.0,No rechazar H0,0.0,0.03333333333333333,Empate (mediana delta = 0)
+2.instancia_mediana,12,medium,30,210.0,0.6398739285968992,No rechazar H0,1.0,0.5,SHOA mejor (menor fitness)
+2.instancia_mediana,12,soft,30,218.0,0.7649575823624072,No rechazar H0,0.0,-0.5,Empate (mediana delta = 0)
+3.instancia_dura,24,hard,30,224.5,0.8689707534027493,No rechazar H0,0.0,0.0,Empate (mediana delta = 0)
+3.instancia_dura,24,medium,30,200.5,0.5088339023713164,No rechazar H0,-1.0,-0.2,SHOLIME mejor (menor fitness)
+3.instancia_dura,24,soft,30,213.5,0.6951640914861223,No rechazar H0,0.0,-0.26666666666666666,Empate (mediana delta = 0)

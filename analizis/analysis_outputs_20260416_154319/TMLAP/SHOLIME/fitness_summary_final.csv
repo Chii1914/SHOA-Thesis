@@ -1,0 +1,4 @@
+dataset,function,dimension,n_runs,best,worst,mean,std
+SHOLIME,1.instancia_simple,6,30,89.0,89.0,89.0,0.0
+SHOLIME,2.instancia_mediana,12,30,152.0,164.0,157.93333333333334,3.016430104397025
+SHOLIME,3.instancia_dura,24,30,297.0,317.0,311.06666666666666,4.084734687989462

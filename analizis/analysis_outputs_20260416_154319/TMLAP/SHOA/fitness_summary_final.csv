@@ -1,0 +1,4 @@
+dataset,function,dimension,n_runs,best,worst,mean,std
+SHOA,1.instancia_simple,6,30,89.0,89.0,89.0,0.0
+SHOA,2.instancia_mediana,12,30,152.0,161.0,157.53333333333333,2.445732854463524
+SHOA,3.instancia_dura,24,30,301.0,316.0,310.46666666666664,2.909358660614389

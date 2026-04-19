@@ -1,0 +1,10 @@
+function,dimension,profile,n_pairs,shoa_shapiro_p,shoa_status,sholime_shapiro_p,sholime_status,diff_shapiro_p,diff_status
+1.instancia_simple,6,hard,30,,constante,,constante,,constante
+1.instancia_simple,6,medium,30,,constante,,constante,,constante
+1.instancia_simple,6,soft,30,,constante,,constante,,constante
+2.instancia_mediana,12,hard,30,0.033787545931755654,ok,0.023876792483194843,ok,0.10910587037069272,ok
+2.instancia_mediana,12,medium,30,0.016120080205728658,ok,0.49572819696747333,ok,0.06646269633091825,ok
+2.instancia_mediana,12,soft,30,0.3936663557925795,ok,0.10673265721932042,ok,0.13253844391236397,ok
+3.instancia_dura,24,hard,30,0.018014820616772308,ok,0.010743940071579439,ok,0.15006584605888681,ok
+3.instancia_dura,24,medium,30,0.00012180420802680065,ok,0.0009263685496742326,ok,0.008806458392262602,ok
+3.instancia_dura,24,soft,30,0.00023769905349342504,ok,0.0022014978183243408,ok,0.18014848901236383,ok

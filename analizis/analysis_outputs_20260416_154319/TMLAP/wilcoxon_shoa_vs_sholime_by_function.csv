@@ -1,0 +1,4 @@
+function,dimension,n_pairs,wilcoxon_stat,p_value,decision_0.05,median_delta_sholime_minus_shoa,mean_delta_sholime_minus_shoa,trend
+1.instancia_simple,6,90,2047.5,1.0,No rechazar H0,0.0,0.0,Empate (mediana delta = 0)
+2.instancia_mediana,12,90,1991.5,0.8209163160031171,No rechazar H0,0.0,0.011111111111111112,Empate (mediana delta = 0)
+3.instancia_dura,24,90,1931.0,0.6383818023565493,No rechazar H0,0.0,-0.15555555555555556,Empate (mediana delta = 0)
