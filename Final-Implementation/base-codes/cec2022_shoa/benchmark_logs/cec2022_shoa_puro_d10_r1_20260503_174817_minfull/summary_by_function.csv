@@ -1,0 +1,2 @@
+function,dimension,runs,global_optimum,best,worst,mean,median,std,mean_error_to_optimum,mean_runtime_sec,mean_rescues,mean_diagnostics_invoked,mean_positive_diagnosis
+F12022,10,1,300.0,2414.9029079842703,2414.9029079842703,2414.9029079842703,2414.9029079842703,0.0,2114.9029079842703,0.02832317352294922,0.0,0.0,0.0

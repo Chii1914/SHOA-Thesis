@@ -1,0 +1,2 @@
+function,dimension,run_id,seed,best_fitness,global_optimum,error_to_optimum,rescues_applied,diagnostics_invoked,diagnostics_invocation_count,positive_diagnosis_count,runtime_sec,diagnostics_invocation_iterations
+1.instancia_simple,6,1,1,89.0,nan,nan,3,35,35,34,2.024608850479126,10;19;20;21;22;23;24;25;26;27;28;29;30;31;32;33;34;35;44;45;46;47;48;49;50;51;52;53;54;55;56;57;58;59;60

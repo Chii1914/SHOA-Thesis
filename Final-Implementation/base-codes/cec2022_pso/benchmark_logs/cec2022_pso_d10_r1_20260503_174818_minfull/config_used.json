@@ -1,0 +1,31 @@
+{
+  "timestamp": "20260503_174818",
+  "algorithm": "PSO",
+  "functions": [
+    "F12022"
+  ],
+  "dims": [
+    10
+  ],
+  "runs": 1,
+  "seed_start": 1,
+  "paper_like_protocol": {
+    "pop_size": 20,
+    "max_iter": 40
+  },
+  "pso_controller": {
+    "inertia": 0.72,
+    "cognitive": 1.7,
+    "social": 1.7,
+    "v_max_frac": 0.25
+  },
+  "traceability_files": {
+    "full_output_csv": "full_output.csv",
+    "lime_contributions_csv": "lime_contributions.csv"
+  },
+  "notes": {
+    "diagnostics": "No aplica en PSO",
+    "rescues": "No aplica en PSO",
+    "lime_contributions": "Archivo creado vacio (solo header) para compatibilidad"
+  }
+}

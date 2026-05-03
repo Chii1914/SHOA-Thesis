@@ -1,0 +1,35 @@
+{
+  "base_args": {
+    "instances": "all",
+    "instance_dir": ".",
+    "runs": 30,
+    "seed_start": 1,
+    "pop_size": 30,
+    "max_iter": 500,
+    "inertia": 0.72,
+    "cognitive": 1.7,
+    "social": 1.7,
+    "v_max_frac": 0.25,
+    "output_dir": "results/benchmark_logs"
+  },
+  "profiles": {
+    "soft": {
+      "inertia": 0.78,
+      "cognitive": 1.45,
+      "social": 1.45,
+      "v_max_frac": 0.2
+    },
+    "medium": {
+      "inertia": 0.72,
+      "cognitive": 1.7,
+      "social": 1.7,
+      "v_max_frac": 0.25
+    },
+    "hard": {
+      "inertia": 0.62,
+      "cognitive": 2.05,
+      "social": 2.05,
+      "v_max_frac": 0.35
+    }
+  }
+}

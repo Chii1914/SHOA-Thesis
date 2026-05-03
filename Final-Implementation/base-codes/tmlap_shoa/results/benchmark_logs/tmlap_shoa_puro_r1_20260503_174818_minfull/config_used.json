@@ -1,0 +1,20 @@
+{
+  "timestamp": "20260503_174818",
+  "instances": [
+    "1.instancia_simple.txt"
+  ],
+  "instance_dir": "/Users/maximilianoaguirre/Desktop/SHOA-Thesis/Final-Implementation/base-codes/tmlap_shoa/benchmarks",
+  "runs": 1,
+  "seed_start": 1,
+  "paper_like_protocol": {
+    "pop_size": 20,
+    "max_iter": 60
+  },
+  "shoa_puro_controller": {
+    "algorithm": "SHO"
+  },
+  "traceability_files": {
+    "full_output_csv": "full_output.csv",
+    "lime_contributions_csv": "lime_contributions.csv"
+  }
+}

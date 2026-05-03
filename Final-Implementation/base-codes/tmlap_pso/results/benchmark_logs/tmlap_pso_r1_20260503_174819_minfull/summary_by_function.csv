@@ -1,0 +1,2 @@
+function,dimension,runs,global_optimum,best,worst,mean,median,std,mean_error_to_optimum,mean_runtime_sec,mean_rescues,mean_diagnostics_invoked,mean_positive_diagnosis
+1.instancia_simple,6,1,nan,92.0,92.0,92.0,92.0,0.0,nan,0.02423095703125,0.0,0.0,0.0

@@ -1,0 +1,23 @@
+{
+  "timestamp": "20260502_200218",
+  "instances": [
+    "1.instancia_simple.txt"
+  ],
+  "instance_dir": "/Users/maximilianoaguirre/Desktop/SHOA-Thesis/Final-Implementation/base-codes/tmlap_pso/benchmarks",
+  "runs": 2,
+  "seed_start": 1,
+  "paper_like_protocol": {
+    "pop_size": 20,
+    "max_iter": 60
+  },
+  "pso_controller": {
+    "inertia": 0.72,
+    "cognitive": 1.7,
+    "social": 1.7,
+    "v_max_frac": 0.25
+  },
+  "traceability_files": {
+    "full_output_csv": "full_output.csv",
+    "lime_contributions_csv": "lime_contributions.csv"
+  }
+}

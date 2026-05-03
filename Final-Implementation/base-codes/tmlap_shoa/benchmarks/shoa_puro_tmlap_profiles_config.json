@@ -1,0 +1,25 @@
+{
+  "base_args": {
+    "instances": "all",
+    "instance_dir": ".",
+    "runs": 30,
+    "seed_start": 1,
+    "pop_size": 30,
+    "max_iter": 500,
+    "output_dir": "results/benchmark_logs"
+  },
+  "profiles": {
+    "soft": {
+      "pop_size": 24,
+      "max_iter": 350
+    },
+    "medium": {
+      "pop_size": 30,
+      "max_iter": 500
+    },
+    "hard": {
+      "pop_size": 40,
+      "max_iter": 700
+    }
+  }
+}

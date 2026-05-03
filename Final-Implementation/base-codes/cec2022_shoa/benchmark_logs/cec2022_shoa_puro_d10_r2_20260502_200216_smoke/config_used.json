@@ -1,0 +1,26 @@
+{
+  "timestamp": "20260502_200216",
+  "algorithm": "SHOA_PURO",
+  "functions": [
+    "F12022",
+    "F22022"
+  ],
+  "dims": [
+    10
+  ],
+  "runs": 2,
+  "seed_start": 1,
+  "paper_like_protocol": {
+    "pop_size": 30,
+    "max_iter": 40
+  },
+  "traceability_files": {
+    "full_output_csv": "full_output.csv",
+    "lime_contributions_csv": "lime_contributions.csv"
+  },
+  "notes": {
+    "diagnostics": "No aplica en SHOA puro",
+    "rescues": "No aplica en SHOA puro",
+    "lime_contributions": "Archivo creado vacio (solo header) para compatibilidad"
+  }
+}

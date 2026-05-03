@@ -1,0 +1,32 @@
+{
+  "timestamp": "20260503_174819",
+  "instances": [
+    "1.instancia_simple.txt"
+  ],
+  "instance_dir": "/Users/maximilianoaguirre/Desktop/SHOA-Thesis/Final-Implementation/base-codes/tmlap_sholime/benchmarks",
+  "runs": 1,
+  "seed_start": 1,
+  "paper_like_protocol": {
+    "pop_size": 20,
+    "max_iter": 60
+  },
+  "sholime_controller": {
+    "window_size": 10,
+    "epsilon_stagnation": 0.0008,
+    "cooldown_iters": 6,
+    "lime_num_samples": 300,
+    "importance_threshold": 0.035,
+    "delta_tolerance": 8e-05,
+    "fidelity_threshold": 0.1,
+    "rescue_mode": "leader_repulsion",
+    "rescue_eta": 1.0,
+    "rescue_levy_scale": 0.3,
+    "rescue_patience_iters": 25,
+    "rescue_min_improvement": 0.0,
+    "enforce_elite_archive": true
+  },
+  "traceability_files": {
+    "full_output_csv": "full_output.csv",
+    "lime_contributions_csv": "lime_contributions.csv"
+  }
+}
