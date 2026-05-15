@@ -86,3 +86,68 @@ python start-tests.py --suite all --fail-fast
 # Omitir bloque estadistico
 python start-tests.py --suite all --skip-stats
 ```
+
+## TMLAP Very Large Matrix (2000 Iter)
+
+Para ejecutar solo TMLAP en instancias grandes con 2000 iteraciones y 30 runs:
+
+```bash
+cd Final-Implementation
+python run_tmlap_very_large_matrix.py
+```
+
+Este runner ejecuta en secuencia:
+
+- PSO TMLAP sobre `4.instancia_very_large_500_hubs.txt` y `5.instancia_very_large_1000_hubs.txt`
+- SHOA TMLAP sobre las mismas dos instancias
+- SHOA+LIME TMLAP en 6 combinaciones:
+	- soft/medium/hard x leader_repulsion/levy_teleport
+
+Y luego genera:
+
+- Analisis descriptivo por algoritmo (CSV + graficos)
+- Analisis estadistico pairwise:
+	- PSO vs SHOA
+	- SHOA vs SHOA+LIME (por profile_mode)
+	- PSO vs SHOA+LIME (por profile_mode)
+
+### Salidas
+
+Cada corrida crea una carpeta:
+
+`final-test-runs/tmlap_very_large_matrix_<timestamp>/`
+
+Con:
+
+- `run_tmlap_very_large_matrix.log`
+- `job_manifest.csv`
+- `job_manifest.json`
+- `analysis_manifest.csv` (si no se omite analisis descriptivo)
+- `analysis_manifest.json` (si no se omite analisis descriptivo)
+- `analysis/descriptive/*`
+- `analysis/statistics/normality_shapiro_pairwise.csv`
+- `analysis/statistics/comparisons_pairwise.csv`
+- `analysis/statistics/reporte_estadistico_pairwise.md`
+- `run_tmlap_very_large_summary.md`
+
+### Flags utiles
+
+```bash
+# Cambiar iteraciones y runs
+python run_tmlap_very_large_matrix.py --max-iter 2000 --runs 30
+
+# Cambiar instancias objetivo
+python run_tmlap_very_large_matrix.py --instances 4.instancia_very_large_500_hubs.txt,5.instancia_very_large_1000_hubs.txt
+
+# Cambiar perfiles y modos SHOLIME
+python run_tmlap_very_large_matrix.py --profiles soft,medium,hard --modes leader_repulsion,levy_teleport
+
+# Omitir analisis descriptivo
+python run_tmlap_very_large_matrix.py --skip-descriptive-analysis
+
+# Omitir analisis estadistico
+python run_tmlap_very_large_matrix.py --skip-stats
+
+# Probar sin ejecutar benchmarks
+python run_tmlap_very_large_matrix.py --dry-run
+```
