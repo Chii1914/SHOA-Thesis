@@ -1,0 +1,6 @@
+function,dimension,runs,global_optimum,best,worst,mean,median,std,mean_error_to_optimum,mean_runtime_sec,mean_rescues,mean_diagnostics_invoked,mean_positive_diagnosis
+1.instancia_simple,6,30,nan,89.0,92.0,89.6,89.0,1.2205143065174586,nan,0.09878683090209961,0.0,0.0,0.0
+2.instancia_mediana,12,30,nan,155.0,162.0,157.3,158.0,1.8597367258983655,nan,0.23637335300445556,0.0,0.0,0.0
+3.instancia_dura,24,30,nan,282.0,309.0,301.5,302.0,4.539102144241972,nan,0.5960128704706827,0.0,0.0,0.0
+4.instancia_very_large_500_hubs,500,30,nan,1000000000.0,1000000000.0,1000000000.0,1000000000.0,0.0,nan,88.5843399922053,0.0,0.0,0.0
+5.instancia_very_large_1000_hubs,1000,30,nan,1000000000.0,1000000000.0,1000000000.0,1000000000.0,0.0,nan,346.8342068195343,0.0,0.0,0.0

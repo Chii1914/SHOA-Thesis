@@ -1,0 +1,49 @@
+variable,bloque,rol,evidencia,mapeo
+pop Max_iter LB UB Dim fobj,sho_base,parametros base,SHO.py:18,parametros canonicos del problema
+sea_horses,sho_base,poblacion actual,SHO.py:19,estado de agentes
+sea_horses_fitness,sho_base,fitness por agente,SHO.py:21,evaluacion de calidad
+target_position,sho_base,mejor posicion global,SHO.py:34,elite global
+target_fitness,sho_base,mejor fitness global,SHO.py:35,best so far
+elite,movimiento,referencia de atraccion,SHO.py:48,vector elite
+beta,movimiento,ruido gaussiano,SHO.py:47,termino estocastico Eq7
+step_length,movimiento,paso Levy,SHO.py:52;levy.py:10;levy.py:16,Levy flight
+r1,movimiento,selector de rama,SHO.py:57,activa Eq4 o Eq7
+theta row x y z,movimiento,intermedias geometricas,SHO.py:59-63,pre Eq4
+sea_horses_new1,movimiento,estado tras motor,SHO.py:53-71,salida Eq4 Eq7
+alpha,depredacion,factor temporal,SHO.py:78,Eq10
+r2,depredacion,selector de variante,SHO.py:77-81,Eq10
+sea_horses_new2,depredacion,estado tras predacion,SHO.py:75-86,salida Eq10
+sea_horses_fitness1,depredacion,fitness post predacion,SHO.py:87,evaluacion adultos
+sea_horses_father,reproduccion,padres top,SHO.py:92,Eq12
+sea_horses_mother,reproduccion,padres complemento,SHO.py:93,Eq12
+r3,reproduccion,peso mezcla,SHO.py:97-98,Eq13
+si,reproduccion,descendencia intermedia,SHO.py:95-98,Eq13
+sea_horses_offspring,reproduccion,descendencia final,SHO.py:100,candidatos nuevos
+sea_horses_fitness2,reproduccion,fitness descendencia,SHO.py:101,evaluacion offspring
+sea_horses_fitness_all,seleccion,fitness combinado,SHO.py:104,seleccion elitista
+convergence_curve,seguimiento,curva de convergencia,SHO.py:25;SHO.py:119,metrica principal
+fitness_history,seguimiento,historial fitness,SHO.py:22;SHO.py:112,trazabilidad
+population_history,seguimiento,historial posiciones,SHO.py:23;SHO.py:113,trazabilidad
+trajectories,seguimiento,historial componente 1,SHO.py:26;SHO.py:114,salida auxiliar
+window_size,sholime_config,ventana de estancamiento,SHO_LIME_Controller.py:32,control xai
+epsilon_stagnation,sholime_config,umbral trigger,SHO_LIME_Controller.py:33,control xai
+cooldown_iters,sholime_config,enfriamiento rescate,SHO_LIME_Controller.py:34,control xai
+lime_num_samples,sholime_config,muestras de explicacion,SHO_LIME_Controller.py:35,control xai
+importance_threshold,sholime_config,umbral importancia,SHO_LIME_Controller.py:36,control xai
+delta_tolerance,sholime_config,umbral mejora esperada,SHO_LIME_Controller.py:37,control xai
+fidelity_threshold,sholime_config,umbral fidelidad local,SHO_LIME_Controller.py:38,control xai
+rescue_mode,sholime_config,modo rescate,SHO_LIME_Controller.py:40,levy teleport o leader repulsion
+rescue_eta,sholime_config,intensidad repulsion,SHO_LIME_Controller.py:41,parametro rescate
+rescue_levy_scale,sholime_config,escala salto levy,SHO_LIME_Controller.py:42,parametro rescate
+rescue_patience_iters,sholime_config,paciencia de prueba,SHO_LIME_Controller.py:43,parametro rescate
+rescue_min_improvement,sholime_config,mejora minima,SHO_LIME_Controller.py:44,parametro rescate
+enforce_elite_archive,sholime_config,preservar elite historica,SHO_LIME_Controller.py:45,parametro rescate
+decision_history,sholime_estado,historial decisiones,SHO_LIME_Controller.py:413,diagnostico lime
+memory_window,sholime_estado,ventana best fitness,SHO_LIME_Controller.py:414,trigger estancamiento
+trigger_candidate,sholime_estado,candidato a diagnostico,SHO_LIME_Controller.py:467,disparo de lime
+diagnostics_log,sholime_estado,log de diagnosticos,SHO_LIME_Controller.py:417,bitacora xai
+diagnostics_invocation_iterations,sholime_estado,iteraciones con lime,SHO_LIME_Controller.py:418,bitacora xai
+rescue_count,sholime_estado,conteo rescates,SHO_LIME_Controller.py:421,bitacora xai
+rollback_count,sholime_estado,conteo rollbacks,SHO_LIME_Controller.py:422,bitacora xai
+FEATURE_NAMES,sholime_features,features explicables,SHO_LIME_Controller.py:14,insumos lime
+r1 mag_browniano mag_levy r2 mag_predacion,sholime_features,vector decision interpretable,SHO_LIME_Controller.py:80,insumos lime y simulacion salto

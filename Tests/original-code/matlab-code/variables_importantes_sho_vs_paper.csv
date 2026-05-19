@@ -1,0 +1,35 @@
+variable,fase,rol,evidencia,contraste_paper
+pop,configuracion,tamano poblacion,main_SHO.m:17;SHO.m:13,N poblacion de agentes
+Max_iter,configuracion,iteraciones maximas,main_SHO.m:18;SHO.m:13,horizonte T
+LB UB,configuracion,limites de busqueda,main_SHO.m:21;initialization.m:1,restricciones de dominio
+Dim,configuracion,dimension problema,main_SHO.m:21;SHO.m:13,dimension D
+fobj,configuracion,funcion objetivo,main_SHO.m:21;SHO.m:13,minimizacion del benchmark
+Sea_horses,estado,poblacion actual,SHO.m:15,posiciones de seahorses
+Sea_horsesFitness,estado,fitness poblacion,SHO.m:16;SHO.m:110,evaluacion para ranking
+TargetPosition,estado,mejor posicion global,SHO.m:34,elite global best-so-far
+TargetFitness,estado,mejor fitness global,SHO.m:35,valor objetivo optimo observado
+Elite,movimiento,referencia elite replicada,SHO.m:43,atraccion hacia mejor solucion
+Step_length,movimiento,longitud paso Levy,SHO.m:46;levy.m:1;levy.m:7,exploracion via Levy flight
+beta,movimiento,ruido gaussiano,SHO.m:42,perturbacion estocastica Eq.(7)
+r1,movimiento,selector de rama,SHO.m:45;SHO.m:49,decide Eq.(4) o Eq.(7)
+u v l,movimiento,hiperparametros fijos,SHO.m:38;SHO.m:39;SHO.m:40,parametros de escala
+theta row x y z,movimiento,intermedias geometria,SHO.m:51-55,preparan actualizacion Eq.(4)
+Sea_horses_new1,movimiento,poblacion post movimiento,SHO.m:56;SHO.m:58,resultado Eq.(4) y Eq.(7)
+alpha,depredacion,balance temporal,SHO.m:74,modula Eq.(10)
+r2,depredacion,selector variante,SHO.m:73;SHO.m:75,umbral 0.1 en Eq.(10)
+Sea_horses_new2,depredacion,poblacion post depredacion,SHO.m:76;SHO.m:78,actualizacion Eq.(10)
+Sea_horsesFitness1,depredacion,fitness post depredacion,SHO.m:88,evaluacion candidatos adultos
+index,reproduccion,ranking por fitness,SHO.m:90,base de Eq.(12)
+Sea_horses_father,reproduccion,mitad superior,SHO.m:93,grupo de alta calidad Eq.(12)
+Sea_horses_mother,reproduccion,mitad inferior,SHO.m:94,grupo complementario Eq.(12)
+r3,reproduccion,peso recombinacion,SHO.m:96,mezcla lineal Eq.(13)
+Si,reproduccion,offspring intermedio,SHO.m:97,descendencia Eq.(13)
+Sea_horses_offspring,reproduccion,descendencia final,SHO.m:99,poblacion candidata
+Sea_horsesFitness2,reproduccion,fitness descendencia,SHO.m:106,evaluacion offspring
+Sea_horses_new,seleccion,pool combinado,SHO.m:111,adultos mas offspring
+sorted_indexes,seleccion,ranking final,SHO.m:113,truncamiento elitista a pop
+SortfitbestN,seguimiento,fitness ordenado supervivientes,SHO.m:117,base de update global
+Convergence_curve,seguimiento,curva mejor fitness,SHO.m:19;SHO.m:36;SHO.m:128,metrica de convergencia
+fitness_history,seguimiento,historial fitness,SHO.m:17;SHO.m:118,trazabilidad dinamica
+population_history,seguimiento,historial posiciones,SHO.m:18;SHO.m:119,trazabilidad en espacio de busqueda
+Trajectories,seguimiento,historial dimension 1,SHO.m:20;SHO.m:120,salida auxiliar de trayectoria
