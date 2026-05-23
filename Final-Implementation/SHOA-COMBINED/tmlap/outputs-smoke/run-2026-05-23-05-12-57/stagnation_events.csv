@@ -1,0 +1,4 @@
+run_id,timestamp,function_name,dimension,iteration,event,fe,sfes,min_sfes,last_improvement_fe,warmup_active,warmup_fes,restart_attempted,restart_executed,restart_blocked_by_cooldown,restart_source,restart_feature,restart_feature_score,restart_count,restart_cooldown_fes,restart_cooldown_remaining_fes,lime_triggered,lime_trigger_source,run_number
+run-2026-05-23-05-12-57,2026-05-23T05:12:57Z,1.instancia_simple.txt,6,1,stagnation_start,25,15,8,10,0,10,0,0,0,none,,0.0,0,8,0,0,none,1
+run-2026-05-23-05-12-57,2026-05-23T05:12:57Z,1.instancia_simple.txt,6,1,warmup_completed,25,15,8,10,0,10,0,0,0,none,,0.0,0,8,0,0,none,1
+run-2026-05-23-05-12-57,2026-05-23T05:12:57Z,1.instancia_simple.txt,6,1,restart_executed,26,15,8,10,0,10,1,1,0,random_fallback,,0.0,1,8,8,0,none,1

@@ -1,0 +1,19 @@
+{
+  "run_id": "run-2026-05-23-05-04-34",
+  "timestamp": "2026-05-23T05:04:34Z",
+  "algorithm": "PSO",
+  "problem": "CEC2022",
+  "config": {
+    "functions": [
+      1
+    ],
+    "dimension": 10,
+    "particles": 12,
+    "max_iter": 10,
+    "runs": 1,
+    "seed": 42,
+    "w": 0.7,
+    "c1": 1.7,
+    "c2": 1.7
+  }
+}

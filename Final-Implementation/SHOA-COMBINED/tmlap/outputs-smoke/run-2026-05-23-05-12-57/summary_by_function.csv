@@ -1,0 +1,2 @@
+function_name,runs_completed,mean_best_fitness,std_best_fitness,min_best_fitness,max_best_fitness
+1.instancia_simple.txt,1,95.0,0.0,95.0,95.0

@@ -1,0 +1,54 @@
+{
+  "algorithm": "SHOA-COMBINED",
+  "run_id": "run-2026-05-23-05-11-55",
+  "timestamp": "2026-05-23T05:11:55Z",
+  "functions": [
+    1
+  ],
+  "dimension": 10,
+  "pop": 10,
+  "max_iter": 12,
+  "runs": 1,
+  "seed_base": 42,
+  "lime": {
+    "enabled": 1,
+    "trigger_policy": "stagnation_start_only",
+    "accumulate_only_outside_stagnation": 1,
+    "pause_during_stagnation": 1,
+    "resume_after_recovered": 1,
+    "history_window": "global_from_start_excluding_stagnated_iterations",
+    "lime_every": 1,
+    "lime_every_input": null,
+    "lime_every_strategy": "auto_5pct_max_iter",
+    "lime_every_active": 0,
+    "lime_min_samples": 20,
+    "selection_mode": "medoid",
+    "stagnation_lime_selection_mode": "medoid",
+    "legacy_lime_selection_mode_input": null
+  },
+  "stagnation": {
+    "enabled": 1,
+    "min_sfes_ratio": 0.04,
+    "max_fes": 0
+  },
+  "restart": {
+    "enabled": 1,
+    "policy": "stagnation_start_immediate",
+    "selection": "worst_fitness_preserve_elite",
+    "restart_percent": 7.0,
+    "restart_range_required": "[5,10]",
+    "cooldown_unit": "fes",
+    "cooldown_fes_ratio": 0.04,
+    "cooldown_fes": 8,
+    "warmup_fes_ratio": 0.05,
+    "warmup_fes": 10,
+    "lime_dominance_threshold": 0.9,
+    "lime_dominance_metric": "relative_importance_per_diagnosis_fused_targets",
+    "lime_targets_fusion": [
+      "classification_improved",
+      "regression_y_reg"
+    ],
+    "fallback_formula": "LB + (UB - LB) * rand[0,1]",
+    "fallback_scope": "restart_subset"
+  }
+}

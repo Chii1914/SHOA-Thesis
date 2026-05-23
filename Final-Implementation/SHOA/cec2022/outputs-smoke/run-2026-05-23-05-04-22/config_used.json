@@ -1,0 +1,16 @@
+{
+  "run_id": "run-2026-05-23-05-04-22",
+  "timestamp": "2026-05-23T05:04:22Z",
+  "algorithm": "SHOA",
+  "problem": "CEC2022",
+  "config": {
+    "functions": [
+      1
+    ],
+    "dimension": 10,
+    "population": 10,
+    "max_iter": 10,
+    "runs": 1,
+    "seed": 42
+  }
+}

@@ -1,0 +1,4 @@
+run_id,timestamp,function_name,dimension,iteration,event,fe,sfes,min_sfes,last_improvement_fe,warmup_active,warmup_fes,restart_attempted,restart_executed,restart_blocked_by_cooldown,restart_source,restart_feature,restart_feature_score,restart_count,restart_cooldown_fes,restart_cooldown_remaining_fes,lime_triggered,lime_trigger_source,run_number
+run-2026-05-23-05-15-47,2026-05-23T05:15:47Z,F1,10,1,warmup_completed,25,0,5,25,0,7,0,0,0,none,,0.0,0,6,0,0,none,1
+run-2026-05-23-05-15-47,2026-05-23T05:15:47Z,F1,10,8,stagnation_start,130,15,5,115,0,7,0,0,0,none,,0.0,0,6,0,0,none,1
+run-2026-05-23-05-15-47,2026-05-23T05:15:47Z,F1,10,8,restart_executed,131,15,5,115,0,7,1,1,0,random_fallback,delta_position_norm,0.2810003441767223,1,6,6,1,stagnation_start,1

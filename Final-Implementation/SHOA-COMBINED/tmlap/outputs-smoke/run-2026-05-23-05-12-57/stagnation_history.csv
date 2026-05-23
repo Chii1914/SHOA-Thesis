@@ -1,0 +1,13 @@
+run_id,timestamp,function_name,dimension,iteration,fe,best_fitness,last_improvement_fe,sfes,min_sfes,stagnated,improved,event,run_number
+run-2026-05-23-05-12-57,2026-05-23T05:12:57Z,1.instancia_simple.txt,6,1,25,95.0,10,15,8,1,0,stagnation_start,1
+run-2026-05-23-05-12-57,2026-05-23T05:12:57Z,1.instancia_simple.txt,6,2,41,95.0,10,31,8,1,0,none,1
+run-2026-05-23-05-12-57,2026-05-23T05:12:57Z,1.instancia_simple.txt,6,3,56,95.0,10,46,8,1,0,none,1
+run-2026-05-23-05-12-57,2026-05-23T05:12:57Z,1.instancia_simple.txt,6,4,71,95.0,10,61,8,1,0,none,1
+run-2026-05-23-05-12-57,2026-05-23T05:12:57Z,1.instancia_simple.txt,6,5,86,95.0,10,76,8,1,0,none,1
+run-2026-05-23-05-12-57,2026-05-23T05:12:57Z,1.instancia_simple.txt,6,6,101,95.0,10,91,8,1,0,none,1
+run-2026-05-23-05-12-57,2026-05-23T05:12:57Z,1.instancia_simple.txt,6,7,116,95.0,10,106,8,1,0,none,1
+run-2026-05-23-05-12-57,2026-05-23T05:12:57Z,1.instancia_simple.txt,6,8,131,95.0,10,121,8,1,0,none,1
+run-2026-05-23-05-12-57,2026-05-23T05:12:57Z,1.instancia_simple.txt,6,9,146,95.0,10,136,8,1,0,none,1
+run-2026-05-23-05-12-57,2026-05-23T05:12:57Z,1.instancia_simple.txt,6,10,161,95.0,10,151,8,1,0,none,1
+run-2026-05-23-05-12-57,2026-05-23T05:12:57Z,1.instancia_simple.txt,6,11,176,95.0,10,166,8,1,0,none,1
+run-2026-05-23-05-12-57,2026-05-23T05:12:57Z,1.instancia_simple.txt,6,12,191,95.0,10,181,8,1,0,none,1

@@ -1,0 +1,7 @@
+run_id,timestamp,function_name,dimension,iteration,event,fe,sfes,min_sfes,last_improvement_fe,warmup_active,warmup_fes,restart_attempted,restart_executed,restart_blocked_by_cooldown,restart_source,restart_feature,restart_feature_score,restart_count,restart_cooldown_fes,restart_cooldown_remaining_fes,lime_triggered,lime_trigger_source,run_number
+run-2026-05-23-05-11-55,2026-05-23T05:11:55Z,F1,10,1,warmup_completed,25,0,8,25,0,10,0,0,0,none,,0.0,0,8,0,0,none,1
+run-2026-05-23-05-11-55,2026-05-23T05:11:55Z,F1,10,6,stagnation_start,100,15,8,85,0,10,0,0,0,none,,0.0,0,8,0,0,none,1
+run-2026-05-23-05-11-55,2026-05-23T05:11:55Z,F1,10,6,restart_executed,101,15,8,85,0,10,1,1,0,random_fallback,delta_position_norm,0.22870883943813758,1,8,8,1,stagnation_start,1
+run-2026-05-23-05-11-55,2026-05-23T05:11:55Z,F1,10,9,recovered,146,0,8,146,0,10,0,0,0,none,,0.0,0,8,0,0,none,1
+run-2026-05-23-05-11-55,2026-05-23T05:11:55Z,F1,10,12,stagnation_start,191,15,8,176,0,10,0,0,0,none,,0.0,0,8,0,0,none,1
+run-2026-05-23-05-11-55,2026-05-23T05:11:55Z,F1,10,12,restart_executed,192,15,8,176,0,10,1,1,0,random_fallback,alpha,0.16022939046083337,1,8,8,1,stagnation_start,1
