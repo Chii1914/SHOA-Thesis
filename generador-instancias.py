@@ -26,7 +26,7 @@ def generar_instancia_desde_hubs(n_hubs=15, D_max=10):
     # 1. GENERACIÓN DE HUBS
     # ==========================================
     hubs_coords = []
-    costos_fijos = []
+    costs = []
     
     for _ in range(n_hubs):
         # Ubicamos los hubs aleatoriamente en el mapa
@@ -35,7 +35,7 @@ def generar_instancia_desde_hubs(n_hubs=15, D_max=10):
         hubs_coords.append((x_h, y_h))
         
         # Asignamos su costo fijo de apertura
-        costos_fijos.append(random.randint(costo_fijo_min, costo_fijo_max))
+        costs.append(random.randint(costo_fijo_min, costo_fijo_max))
 
     # ==========================================
     # 2. GENERACIÓN DE CLIENTES (En función de los Hubs)
@@ -57,14 +57,14 @@ def generar_instancia_desde_hubs(n_hubs=15, D_max=10):
             
             clientes_coords.append((x_c, y_c))
             
-    n_clientes = len(clientes_coords)
+    n_clients = len(clientes_coords)
 
     # ==========================================
     # 3. ASIGNACIÓN DE CAPACIDADES
     # ==========================================
     # Ahora que sabemos cuántos clientes hay en total, repartimos la capacidad
     capacidad = []
-    capacidad_total_objetivo = math.ceil(n_clientes * factor_holgura)
+    capacidad_total_objetivo = math.ceil(n_clients * factor_holgura)
     capacidad_base = capacidad_total_objetivo // n_hubs
     resto_capacidad = capacidad_total_objetivo % n_hubs
     
@@ -87,10 +87,10 @@ def generar_instancia_desde_hubs(n_hubs=15, D_max=10):
     # ==========================================
     # 5. FORMATEO DE SALIDA
     # ==========================================
-    print(f"self.n_clientes = {n_clientes}")
+    print(f"self.n_clientes = {n_clients}")
     print(f"self.n_hubs = {n_hubs}\n")
     
-    print(f"# Matriz de distancias cliente-hub ({n_clientes} x {n_hubs})")
+    print(f"# Matriz de distancias cliente-hub ({n_clients} x {n_hubs})")
     print("self.distancias = [")
     for i, fila in enumerate(distancias):
         fila_str = "    [" + ", ".join(map(str, fila)) + "]"
@@ -101,9 +101,9 @@ def generar_instancia_desde_hubs(n_hubs=15, D_max=10):
     print("]\n")
     
     print("# Costo fijo por abrir cada hub")
-    print(f"self.costos_fijos = {costos_fijos}\n")
+    print(f"self.costs = {costs}\n")
     
-    print(f"# Capacidad máxima por hub (total {sum(capacidad)} >= {n_clientes})")
+    print(f"# Capacidad máxima por hub (total {sum(capacidad)} >= {n_clients})")
     print(f"self.capacidad = {capacidad}\n")
     
     print("# Distancia máxima tolerada")
@@ -111,4 +111,4 @@ def generar_instancia_desde_hubs(n_hubs=15, D_max=10):
 
 # Pruébalo aquí cambiando la cantidad de hubs
 if __name__ == "__main__":
-    generar_instancia_desde_hubs(n_hubs=2000, D_max=12)
+    generar_instancia_desde_hubs(n_hubs=20, D_max=12)

@@ -2336,8 +2336,8 @@ class Particle:
 
 class PSO:
     def __init__(self):
-        self.max_iter = 25
-        self.n_particles = 10
+        self.max_iter = 500
+        self.n_particles = 500
         self.theta = 0.7
         self.alpha = 2
         self.beta = 2

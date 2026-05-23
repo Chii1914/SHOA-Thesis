@@ -1,0 +1,1 @@
+"""SHOA-STAGNATION package."""
