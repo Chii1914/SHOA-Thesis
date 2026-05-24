@@ -36,7 +36,7 @@ from opfunu.cec_based import cec2022
 from scipy.stats import wilcoxon
 
 
-DEFAULT_MAX_FES = {10: 200_000, 20: 1_000_000}
+DEFAULT_MAX_FES = {10: 200_000, 20: 200_000}
 REPRESENTATIVE_FUNCTIONS = (1, 5, 8, 12)
 
 
@@ -989,7 +989,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--combined-max-fes",
         type=int,
-        default=500_000,
+        default=200_000,
         help="MaxFEs used only by SHOA-COMBINED (does not affect PSO/SHOA).",
     )
     parser.add_argument("--combined-rescue-enabled", action="store_true", default=True)
