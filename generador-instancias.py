@@ -111,4 +111,4 @@ def generar_instancia_desde_hubs(n_hubs=15, D_max=10):
 
 # Pruébalo aquí cambiando la cantidad de hubs
 if __name__ == "__main__":
-    generar_instancia_desde_hubs(n_hubs=20, D_max=12)
+    generar_instancia_desde_hubs(n_hubs=50, D_max=12)

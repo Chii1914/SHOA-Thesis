@@ -1,0 +1,7 @@
+run_id,timestamp,function_name,dimension,iteration,fe,best_fitness,last_improvement_fe,sfes,min_sfes,stagnated,improved,event,run_number
+run-2026-05-27-23-45-51,2026-05-27T23:45:51Z,4.instancia.txt,226,1,75,2744.0,30,45,12,1,0,stagnation_start,1
+run-2026-05-27-23-45-51,2026-05-27T23:45:51Z,4.instancia.txt,226,2,123,2704.0,123,0,12,0,1,recovered,1
+run-2026-05-27-23-45-51,2026-05-27T23:45:51Z,4.instancia.txt,226,3,168,2679.0,168,0,12,0,1,none,1
+run-2026-05-27-23-45-51,2026-05-27T23:45:51Z,4.instancia.txt,226,4,213,2679.0,168,45,12,1,0,stagnation_start,1
+run-2026-05-27-23-45-51,2026-05-27T23:45:51Z,4.instancia.txt,226,5,261,2679.0,168,93,12,1,0,none,1
+run-2026-05-27-23-45-51,2026-05-27T23:45:51Z,4.instancia.txt,226,6,306,2679.0,168,138,12,1,0,none,1

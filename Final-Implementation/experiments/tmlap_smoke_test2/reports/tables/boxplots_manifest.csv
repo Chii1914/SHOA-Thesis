@@ -1,0 +1,6 @@
+plot_type,instance_name,max_fes_budget,path
+boxplot_shoa_vs_pso,1.instancia_simple.txt,300,C:\Users\amsmaguirre\Desktop\SHOA-Thesis\Final-Implementation\experiments\tmlap_smoke_test2\reports\plots\boxplot_1.instancia_simple_fes300_SHOA_vs_PSO.png
+boxplot_shoa_vs_pso,2.instancia_mediana.txt,300,C:\Users\amsmaguirre\Desktop\SHOA-Thesis\Final-Implementation\experiments\tmlap_smoke_test2\reports\plots\boxplot_2.instancia_mediana_fes300_SHOA_vs_PSO.png
+boxplot_shoa_vs_pso,3.instancia_dura.txt,300,C:\Users\amsmaguirre\Desktop\SHOA-Thesis\Final-Implementation\experiments\tmlap_smoke_test2\reports\plots\boxplot_3.instancia_dura_fes300_SHOA_vs_PSO.png
+boxplot_shoa_vs_pso,4.instancia.txt,300,C:\Users\amsmaguirre\Desktop\SHOA-Thesis\Final-Implementation\experiments\tmlap_smoke_test2\reports\plots\boxplot_4.instancia_fes300_SHOA_vs_PSO.png
+boxplot_shoa_vs_pso,4.instancia.txt,500,C:\Users\amsmaguirre\Desktop\SHOA-Thesis\Final-Implementation\experiments\tmlap_smoke_test2\reports\plots\boxplot_4.instancia_fes500_SHOA_vs_PSO.png

@@ -1,0 +1,3 @@
+group,max_fes_budget,algorithm,average_rank,instances_count
+all,300,PSO,1.5,1
+all,300,SHOA,1.5,1

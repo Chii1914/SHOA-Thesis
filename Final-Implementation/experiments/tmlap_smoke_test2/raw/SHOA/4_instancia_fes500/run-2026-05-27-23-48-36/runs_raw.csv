@@ -1,0 +1,2 @@
+run_id,timestamp,function_name,instance_name,run_number,seed,dimension,hubs,pop,max_iter,best_fitness,base_cost,feasible_best_solution,overflow_total,distance_violation,fes_used,elapsed_seconds
+run-2026-05-27-23-48-36,2026-05-27T23:48:36Z,4.instancia.txt,4.instancia.txt,1,10035,226,50,30,10,2694.0,2694.0,1,0,0.0,480,2.8589399999473244

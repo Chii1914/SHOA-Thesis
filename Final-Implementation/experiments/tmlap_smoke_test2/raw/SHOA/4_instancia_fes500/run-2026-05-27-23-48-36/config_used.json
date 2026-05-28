@@ -1,0 +1,15 @@
+{
+  "run_id": "run-2026-05-27-23-48-36",
+  "timestamp": "2026-05-27T23:48:36Z",
+  "algorithm": "SHOA",
+  "problem": "TMLAP",
+  "config": {
+    "instances": [
+      "4.instancia.txt"
+    ],
+    "population": 30,
+    "max_iter": 10,
+    "runs": 1,
+    "seed": 42
+  }
+}

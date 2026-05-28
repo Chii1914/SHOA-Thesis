@@ -1,0 +1,220 @@
+{
+  "output_root": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2",
+  "completed_jobs": [
+    {
+      "job_id": "PSO_1_instancia_simple_fes300",
+      "algorithm": "PSO",
+      "instance_name": "1.instancia_simple.txt",
+      "max_fes": 300,
+      "status": "completed",
+      "attempts": 1,
+      "return_code": 0,
+      "run_dir": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\raw\\PSO\\1_instancia_simple_fes300\\run-2026-05-27-23-47-59",
+      "log_file": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\logs\\PSO_1_instancia_simple_fes300.attempt1.log"
+    },
+    {
+      "job_id": "SHOA_1_instancia_simple_fes300",
+      "algorithm": "SHOA",
+      "instance_name": "1.instancia_simple.txt",
+      "max_fes": 300,
+      "status": "completed",
+      "attempts": 1,
+      "return_code": 0,
+      "run_dir": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\raw\\SHOA\\1_instancia_simple_fes300\\run-2026-05-27-23-48-00",
+      "log_file": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\logs\\SHOA_1_instancia_simple_fes300.attempt1.log"
+    },
+    {
+      "job_id": "SHOA-COMBINED_1_instancia_simple_fes300",
+      "algorithm": "SHOA-COMBINED",
+      "instance_name": "1.instancia_simple.txt",
+      "max_fes": 300,
+      "status": "completed",
+      "attempts": 1,
+      "return_code": 0,
+      "run_dir": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\raw\\SHOA-COMBINED\\1_instancia_simple_fes300\\run-2026-05-27-23-48-04",
+      "log_file": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\logs\\SHOA-COMBINED_1_instancia_simple_fes300.attempt1.log"
+    },
+    {
+      "job_id": "PSO_2_instancia_mediana_fes300",
+      "algorithm": "PSO",
+      "instance_name": "2.instancia_mediana.txt",
+      "max_fes": 300,
+      "status": "completed",
+      "attempts": 1,
+      "return_code": 0,
+      "run_dir": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\raw\\PSO\\2_instancia_mediana_fes300\\run-2026-05-27-23-48-05",
+      "log_file": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\logs\\PSO_2_instancia_mediana_fes300.attempt1.log"
+    },
+    {
+      "job_id": "SHOA_2_instancia_mediana_fes300",
+      "algorithm": "SHOA",
+      "instance_name": "2.instancia_mediana.txt",
+      "max_fes": 300,
+      "status": "completed",
+      "attempts": 1,
+      "return_code": 0,
+      "run_dir": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\raw\\SHOA\\2_instancia_mediana_fes300\\run-2026-05-27-23-48-05",
+      "log_file": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\logs\\SHOA_2_instancia_mediana_fes300.attempt1.log"
+    },
+    {
+      "job_id": "SHOA-COMBINED_2_instancia_mediana_fes300",
+      "algorithm": "SHOA-COMBINED",
+      "instance_name": "2.instancia_mediana.txt",
+      "max_fes": 300,
+      "status": "completed",
+      "attempts": 1,
+      "return_code": 0,
+      "run_dir": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\raw\\SHOA-COMBINED\\2_instancia_mediana_fes300\\run-2026-05-27-23-48-12",
+      "log_file": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\logs\\SHOA-COMBINED_2_instancia_mediana_fes300.attempt1.log"
+    },
+    {
+      "job_id": "PSO_3_instancia_dura_fes300",
+      "algorithm": "PSO",
+      "instance_name": "3.instancia_dura.txt",
+      "max_fes": 300,
+      "status": "completed",
+      "attempts": 1,
+      "return_code": 0,
+      "run_dir": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\raw\\PSO\\3_instancia_dura_fes300\\run-2026-05-27-23-48-13",
+      "log_file": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\logs\\PSO_3_instancia_dura_fes300.attempt1.log"
+    },
+    {
+      "job_id": "SHOA_3_instancia_dura_fes300",
+      "algorithm": "SHOA",
+      "instance_name": "3.instancia_dura.txt",
+      "max_fes": 300,
+      "status": "completed",
+      "attempts": 1,
+      "return_code": 0,
+      "run_dir": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\raw\\SHOA\\3_instancia_dura_fes300\\run-2026-05-27-23-48-14",
+      "log_file": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\logs\\SHOA_3_instancia_dura_fes300.attempt1.log"
+    },
+    {
+      "job_id": "SHOA-COMBINED_3_instancia_dura_fes300",
+      "algorithm": "SHOA-COMBINED",
+      "instance_name": "3.instancia_dura.txt",
+      "max_fes": 300,
+      "status": "completed",
+      "attempts": 1,
+      "return_code": 0,
+      "run_dir": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\raw\\SHOA-COMBINED\\3_instancia_dura_fes300\\run-2026-05-27-23-48-19",
+      "log_file": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\logs\\SHOA-COMBINED_3_instancia_dura_fes300.attempt1.log"
+    },
+    {
+      "job_id": "PSO_4_instancia_fes300",
+      "algorithm": "PSO",
+      "instance_name": "4.instancia.txt",
+      "max_fes": 300,
+      "status": "completed",
+      "attempts": 1,
+      "return_code": 0,
+      "run_dir": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\raw\\PSO\\4_instancia_fes300\\run-2026-05-27-23-48-21",
+      "log_file": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\logs\\PSO_4_instancia_fes300.attempt1.log"
+    },
+    {
+      "job_id": "SHOA_4_instancia_fes300",
+      "algorithm": "SHOA",
+      "instance_name": "4.instancia.txt",
+      "max_fes": 300,
+      "status": "completed",
+      "attempts": 1,
+      "return_code": 0,
+      "run_dir": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\raw\\SHOA\\4_instancia_fes300\\run-2026-05-27-23-48-23",
+      "log_file": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\logs\\SHOA_4_instancia_fes300.attempt1.log"
+    },
+    {
+      "job_id": "SHOA-COMBINED_4_instancia_fes300",
+      "algorithm": "SHOA-COMBINED",
+      "instance_name": "4.instancia.txt",
+      "max_fes": 300,
+      "status": "completed",
+      "attempts": 1,
+      "return_code": 0,
+      "run_dir": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\raw\\SHOA-COMBINED\\4_instancia_fes300\\run-2026-05-27-23-48-30",
+      "log_file": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\logs\\SHOA-COMBINED_4_instancia_fes300.attempt1.log"
+    },
+    {
+      "job_id": "PSO_4_instancia_fes500",
+      "algorithm": "PSO",
+      "instance_name": "4.instancia.txt",
+      "max_fes": 500,
+      "status": "completed",
+      "attempts": 1,
+      "return_code": 0,
+      "run_dir": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\raw\\PSO\\4_instancia_fes500\\run-2026-05-27-23-48-33",
+      "log_file": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\logs\\PSO_4_instancia_fes500.attempt1.log"
+    },
+    {
+      "job_id": "SHOA_4_instancia_fes500",
+      "algorithm": "SHOA",
+      "instance_name": "4.instancia.txt",
+      "max_fes": 500,
+      "status": "completed",
+      "attempts": 1,
+      "return_code": 0,
+      "run_dir": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\raw\\SHOA\\4_instancia_fes500\\run-2026-05-27-23-48-36",
+      "log_file": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\logs\\SHOA_4_instancia_fes500.attempt1.log"
+    },
+    {
+      "job_id": "SHOA-COMBINED_4_instancia_fes500",
+      "algorithm": "SHOA-COMBINED",
+      "instance_name": "4.instancia.txt",
+      "max_fes": 500,
+      "status": "completed",
+      "attempts": 1,
+      "return_code": 0,
+      "run_dir": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\raw\\SHOA-COMBINED\\4_instancia_fes500\\run-2026-05-27-23-48-43",
+      "log_file": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\logs\\SHOA-COMBINED_4_instancia_fes500.attempt1.log"
+    }
+  ],
+  "failed_jobs": [],
+  "tables_dir": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\reports\\tables",
+  "plots_dir": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\reports\\plots",
+  "combined_plot_jobs": [
+    {
+      "algorithm": "SHOA-COMBINED",
+      "instance_name": "1.instancia_simple.txt",
+      "max_fes_budget": 300,
+      "run_dir": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\raw\\SHOA-COMBINED\\1_instancia_simple_fes300\\run-2026-05-27-23-48-04",
+      "return_code": 0,
+      "log_file": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\logs\\plot_SHOA-COMBINED_1.instancia_simple_fes300.log",
+      "plots_dir": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\raw\\SHOA-COMBINED\\1_instancia_simple_fes300\\run-2026-05-27-23-48-04\\plots"
+    },
+    {
+      "algorithm": "SHOA-COMBINED",
+      "instance_name": "2.instancia_mediana.txt",
+      "max_fes_budget": 300,
+      "run_dir": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\raw\\SHOA-COMBINED\\2_instancia_mediana_fes300\\run-2026-05-27-23-48-12",
+      "return_code": 0,
+      "log_file": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\logs\\plot_SHOA-COMBINED_2.instancia_mediana_fes300.log",
+      "plots_dir": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\raw\\SHOA-COMBINED\\2_instancia_mediana_fes300\\run-2026-05-27-23-48-12\\plots"
+    },
+    {
+      "algorithm": "SHOA-COMBINED",
+      "instance_name": "3.instancia_dura.txt",
+      "max_fes_budget": 300,
+      "run_dir": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\raw\\SHOA-COMBINED\\3_instancia_dura_fes300\\run-2026-05-27-23-48-19",
+      "return_code": 0,
+      "log_file": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\logs\\plot_SHOA-COMBINED_3.instancia_dura_fes300.log",
+      "plots_dir": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\raw\\SHOA-COMBINED\\3_instancia_dura_fes300\\run-2026-05-27-23-48-19\\plots"
+    },
+    {
+      "algorithm": "SHOA-COMBINED",
+      "instance_name": "4.instancia.txt",
+      "max_fes_budget": 300,
+      "run_dir": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\raw\\SHOA-COMBINED\\4_instancia_fes300\\run-2026-05-27-23-48-30",
+      "return_code": 0,
+      "log_file": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\logs\\plot_SHOA-COMBINED_4.instancia_fes300.log",
+      "plots_dir": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\raw\\SHOA-COMBINED\\4_instancia_fes300\\run-2026-05-27-23-48-30\\plots"
+    },
+    {
+      "algorithm": "SHOA-COMBINED",
+      "instance_name": "4.instancia.txt",
+      "max_fes_budget": 500,
+      "run_dir": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\raw\\SHOA-COMBINED\\4_instancia_fes500\\run-2026-05-27-23-48-43",
+      "return_code": 0,
+      "log_file": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\logs\\plot_SHOA-COMBINED_4.instancia_fes500.log",
+      "plots_dir": "C:\\Users\\amsmaguirre\\Desktop\\SHOA-Thesis\\Final-Implementation\\experiments\\tmlap_smoke_test2\\raw\\SHOA-COMBINED\\4_instancia_fes500\\run-2026-05-27-23-48-43\\plots"
+    }
+  ]
+}

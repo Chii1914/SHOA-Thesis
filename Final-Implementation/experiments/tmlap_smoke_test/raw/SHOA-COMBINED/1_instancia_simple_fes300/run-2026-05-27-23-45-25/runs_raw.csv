@@ -1,0 +1,2 @@
+run_id,timestamp,function_name,run_number,dimension,hubs,seed,pop,max_iter,best_fitness,base_cost,feasible_best_solution,overflow_total,distance_violation,lime_enabled,diagnosis_count,stagnation_events,final_fe,stop_reason,elapsed_seconds
+run-2026-05-27-23-45-25,2026-05-27T23:45:25Z,1.instancia_simple.txt,1,6,3,8347,30,56,89.0,89.0,1,0,0.0,0,0,1,303,max_fes,0.13403309998102486

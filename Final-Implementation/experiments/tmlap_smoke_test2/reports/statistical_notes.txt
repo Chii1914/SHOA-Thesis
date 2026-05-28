@@ -1,0 +1,11 @@
+Statistical protocol notes (TMLAP):
+- Metric: best_fitness (total cost including penalty terms). Lower is better.
+- No f* subtraction: TMLAP has no known analytical optimum.
+- feasibility_rate: fraction of 30 runs that produced a feasible solution.
+- Wilcoxon signed-rank: two-sided, alpha=0.05, SHOA vs PSO only.
+- '+' = SHOA significantly better than PSO.
+- '-' = PSO significantly better than SHOA.
+- '≈' = no significant difference.
+- Instance 4 (4.instancia.txt) has two budget runs:
+    MaxFES=5000 and MaxFES=50000.
+- Contribution plots generated only for SHOA-COMBINED runs.

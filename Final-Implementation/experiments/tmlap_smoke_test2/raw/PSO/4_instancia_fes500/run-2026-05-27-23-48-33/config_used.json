@@ -1,0 +1,19 @@
+{
+  "run_id": "run-2026-05-27-23-48-33",
+  "timestamp": "2026-05-27T23:48:33Z",
+  "algorithm": "PSO",
+  "problem": "TMLAP",
+  "mode": "light",
+  "config": {
+    "instances": [
+      "4.instancia.txt"
+    ],
+    "particles": 40,
+    "max_iter": 11,
+    "runs": 1,
+    "seed": 42,
+    "w": 0.7,
+    "c1": 1.7,
+    "c2": 1.7
+  }
+}

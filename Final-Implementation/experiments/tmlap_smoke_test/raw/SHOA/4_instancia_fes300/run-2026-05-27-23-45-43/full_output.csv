@@ -1,0 +1,7 @@
+run_id,timestamp,function_name,instance_name,run_number,iteration,best_fitness_so_far,fe_estimate
+run-2026-05-27-23-45-43,2026-05-27T23:45:43Z,4.instancia.txt,4.instancia.txt,1,1,2710.0,50
+run-2026-05-27-23-45-43,2026-05-27T23:45:43Z,4.instancia.txt,4.instancia.txt,1,2,2710.0,100
+run-2026-05-27-23-45-43,2026-05-27T23:45:43Z,4.instancia.txt,4.instancia.txt,1,3,2705.0,150
+run-2026-05-27-23-45-43,2026-05-27T23:45:43Z,4.instancia.txt,4.instancia.txt,1,4,2686.0,200
+run-2026-05-27-23-45-43,2026-05-27T23:45:43Z,4.instancia.txt,4.instancia.txt,1,5,2686.0,250
+run-2026-05-27-23-45-43,2026-05-27T23:45:43Z,4.instancia.txt,4.instancia.txt,1,6,2686.0,300

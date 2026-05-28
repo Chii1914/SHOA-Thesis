@@ -1,0 +1,170 @@
+{
+  "message": "No completed jobs. Check logs and state.json",
+  "failed_jobs": [
+    {
+      "job_id": "PSO_1_instancia_simple_fes5000",
+      "algorithm": "PSO",
+      "instance_name": "1.instancia_simple.txt",
+      "max_fes": 5000,
+      "status": "unknown",
+      "attempts": 0,
+      "return_code": "",
+      "run_dir": "",
+      "log_file": ""
+    },
+    {
+      "job_id": "SHOA_1_instancia_simple_fes5000",
+      "algorithm": "SHOA",
+      "instance_name": "1.instancia_simple.txt",
+      "max_fes": 5000,
+      "status": "unknown",
+      "attempts": 0,
+      "return_code": "",
+      "run_dir": "",
+      "log_file": ""
+    },
+    {
+      "job_id": "SHOA-COMBINED_1_instancia_simple_fes5000",
+      "algorithm": "SHOA-COMBINED",
+      "instance_name": "1.instancia_simple.txt",
+      "max_fes": 5000,
+      "status": "unknown",
+      "attempts": 0,
+      "return_code": "",
+      "run_dir": "",
+      "log_file": ""
+    },
+    {
+      "job_id": "PSO_2_instancia_mediana_fes5000",
+      "algorithm": "PSO",
+      "instance_name": "2.instancia_mediana.txt",
+      "max_fes": 5000,
+      "status": "unknown",
+      "attempts": 0,
+      "return_code": "",
+      "run_dir": "",
+      "log_file": ""
+    },
+    {
+      "job_id": "SHOA_2_instancia_mediana_fes5000",
+      "algorithm": "SHOA",
+      "instance_name": "2.instancia_mediana.txt",
+      "max_fes": 5000,
+      "status": "unknown",
+      "attempts": 0,
+      "return_code": "",
+      "run_dir": "",
+      "log_file": ""
+    },
+    {
+      "job_id": "SHOA-COMBINED_2_instancia_mediana_fes5000",
+      "algorithm": "SHOA-COMBINED",
+      "instance_name": "2.instancia_mediana.txt",
+      "max_fes": 5000,
+      "status": "unknown",
+      "attempts": 0,
+      "return_code": "",
+      "run_dir": "",
+      "log_file": ""
+    },
+    {
+      "job_id": "PSO_3_instancia_dura_fes5000",
+      "algorithm": "PSO",
+      "instance_name": "3.instancia_dura.txt",
+      "max_fes": 5000,
+      "status": "unknown",
+      "attempts": 0,
+      "return_code": "",
+      "run_dir": "",
+      "log_file": ""
+    },
+    {
+      "job_id": "SHOA_3_instancia_dura_fes5000",
+      "algorithm": "SHOA",
+      "instance_name": "3.instancia_dura.txt",
+      "max_fes": 5000,
+      "status": "unknown",
+      "attempts": 0,
+      "return_code": "",
+      "run_dir": "",
+      "log_file": ""
+    },
+    {
+      "job_id": "SHOA-COMBINED_3_instancia_dura_fes5000",
+      "algorithm": "SHOA-COMBINED",
+      "instance_name": "3.instancia_dura.txt",
+      "max_fes": 5000,
+      "status": "unknown",
+      "attempts": 0,
+      "return_code": "",
+      "run_dir": "",
+      "log_file": ""
+    },
+    {
+      "job_id": "PSO_4_instancia_fes5000",
+      "algorithm": "PSO",
+      "instance_name": "4.instancia.txt",
+      "max_fes": 5000,
+      "status": "unknown",
+      "attempts": 0,
+      "return_code": "",
+      "run_dir": "",
+      "log_file": ""
+    },
+    {
+      "job_id": "SHOA_4_instancia_fes5000",
+      "algorithm": "SHOA",
+      "instance_name": "4.instancia.txt",
+      "max_fes": 5000,
+      "status": "unknown",
+      "attempts": 0,
+      "return_code": "",
+      "run_dir": "",
+      "log_file": ""
+    },
+    {
+      "job_id": "SHOA-COMBINED_4_instancia_fes5000",
+      "algorithm": "SHOA-COMBINED",
+      "instance_name": "4.instancia.txt",
+      "max_fes": 5000,
+      "status": "unknown",
+      "attempts": 0,
+      "return_code": "",
+      "run_dir": "",
+      "log_file": ""
+    },
+    {
+      "job_id": "PSO_4_instancia_fes50000",
+      "algorithm": "PSO",
+      "instance_name": "4.instancia.txt",
+      "max_fes": 50000,
+      "status": "unknown",
+      "attempts": 0,
+      "return_code": "",
+      "run_dir": "",
+      "log_file": ""
+    },
+    {
+      "job_id": "SHOA_4_instancia_fes50000",
+      "algorithm": "SHOA",
+      "instance_name": "4.instancia.txt",
+      "max_fes": 50000,
+      "status": "unknown",
+      "attempts": 0,
+      "return_code": "",
+      "run_dir": "",
+      "log_file": ""
+    },
+    {
+      "job_id": "SHOA-COMBINED_4_instancia_fes50000",
+      "algorithm": "SHOA-COMBINED",
+      "instance_name": "4.instancia.txt",
+      "max_fes": 50000,
+      "status": "unknown",
+      "attempts": 0,
+      "return_code": "",
+      "run_dir": "",
+      "log_file": ""
+    }
+  ]
+}

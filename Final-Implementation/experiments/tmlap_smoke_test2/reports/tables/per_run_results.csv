@@ -1,0 +1,16 @@
+algorithm,instance_name,max_fes_budget,run_number,best_fitness,base_cost,feasible,overflow_total,distance_violation,fes_used,run_dir
+PSO,1.instancia_simple.txt,300,1,89.0,89.0,1,0,0.0,280,C:\Users\amsmaguirre\Desktop\SHOA-Thesis\Final-Implementation\experiments\tmlap_smoke_test2\raw\PSO\1_instancia_simple_fes300\run-2026-05-27-23-47-59
+SHOA,1.instancia_simple.txt,300,1,89.0,89.0,1,0,0.0,300,C:\Users\amsmaguirre\Desktop\SHOA-Thesis\Final-Implementation\experiments\tmlap_smoke_test2\raw\SHOA\1_instancia_simple_fes300\run-2026-05-27-23-48-00
+SHOA-COMBINED,1.instancia_simple.txt,300,1,89.0,89.0,1,0,0.0,303,C:\Users\amsmaguirre\Desktop\SHOA-Thesis\Final-Implementation\experiments\tmlap_smoke_test2\raw\SHOA-COMBINED\1_instancia_simple_fes300\run-2026-05-27-23-48-04
+PSO,2.instancia_mediana.txt,300,1,156.0,156.0,1,0,0.0,280,C:\Users\amsmaguirre\Desktop\SHOA-Thesis\Final-Implementation\experiments\tmlap_smoke_test2\raw\PSO\2_instancia_mediana_fes300\run-2026-05-27-23-48-05
+SHOA,2.instancia_mediana.txt,300,1,163.0,163.0,1,0,0.0,300,C:\Users\amsmaguirre\Desktop\SHOA-Thesis\Final-Implementation\experiments\tmlap_smoke_test2\raw\SHOA\2_instancia_mediana_fes300\run-2026-05-27-23-48-05
+SHOA-COMBINED,2.instancia_mediana.txt,300,1,155.0,155.0,1,0,0.0,306,C:\Users\amsmaguirre\Desktop\SHOA-Thesis\Final-Implementation\experiments\tmlap_smoke_test2\raw\SHOA-COMBINED\2_instancia_mediana_fes300\run-2026-05-27-23-48-12
+PSO,3.instancia_dura.txt,300,1,311.0,311.0,1,0,0.0,280,C:\Users\amsmaguirre\Desktop\SHOA-Thesis\Final-Implementation\experiments\tmlap_smoke_test2\raw\PSO\3_instancia_dura_fes300\run-2026-05-27-23-48-13
+SHOA,3.instancia_dura.txt,300,1,315.0,315.0,1,0,0.0,300,C:\Users\amsmaguirre\Desktop\SHOA-Thesis\Final-Implementation\experiments\tmlap_smoke_test2\raw\SHOA\3_instancia_dura_fes300\run-2026-05-27-23-48-14
+SHOA-COMBINED,3.instancia_dura.txt,300,1,315.0,315.0,1,0,0.0,303,C:\Users\amsmaguirre\Desktop\SHOA-Thesis\Final-Implementation\experiments\tmlap_smoke_test2\raw\SHOA-COMBINED\3_instancia_dura_fes300\run-2026-05-27-23-48-19
+PSO,4.instancia.txt,300,1,2698.0,2698.0,1,0,0.0,280,C:\Users\amsmaguirre\Desktop\SHOA-Thesis\Final-Implementation\experiments\tmlap_smoke_test2\raw\PSO\4_instancia_fes300\run-2026-05-27-23-48-21
+SHOA,4.instancia.txt,300,1,2711.0,2711.0,1,0,0.0,300,C:\Users\amsmaguirre\Desktop\SHOA-Thesis\Final-Implementation\experiments\tmlap_smoke_test2\raw\SHOA\4_instancia_fes300\run-2026-05-27-23-48-23
+SHOA-COMBINED,4.instancia.txt,300,1,2654.0,2654.0,1,0,0.0,306,C:\Users\amsmaguirre\Desktop\SHOA-Thesis\Final-Implementation\experiments\tmlap_smoke_test2\raw\SHOA-COMBINED\4_instancia_fes300\run-2026-05-27-23-48-30
+PSO,4.instancia.txt,500,1,2650.0,2650.0,1,0,0.0,480,C:\Users\amsmaguirre\Desktop\SHOA-Thesis\Final-Implementation\experiments\tmlap_smoke_test2\raw\PSO\4_instancia_fes500\run-2026-05-27-23-48-33
+SHOA,4.instancia.txt,500,1,2694.0,2694.0,1,0,0.0,480,C:\Users\amsmaguirre\Desktop\SHOA-Thesis\Final-Implementation\experiments\tmlap_smoke_test2\raw\SHOA\4_instancia_fes500\run-2026-05-27-23-48-36
+SHOA-COMBINED,4.instancia.txt,500,1,2700.0,2700.0,1,0,0.0,528,C:\Users\amsmaguirre\Desktop\SHOA-Thesis\Final-Implementation\experiments\tmlap_smoke_test2\raw\SHOA-COMBINED\4_instancia_fes500\run-2026-05-27-23-48-43

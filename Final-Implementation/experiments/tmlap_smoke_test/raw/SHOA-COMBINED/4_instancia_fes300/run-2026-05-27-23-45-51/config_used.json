@@ -1,0 +1,29 @@
+{
+  "run_id": "run-2026-05-27-23-45-51",
+  "timestamp": "2026-05-27T23:45:51Z",
+  "algorithm": "SHOA-COMBINED",
+  "problem": "TMLAP",
+  "config": {
+    "instances": [
+      "4.instancia.txt"
+    ],
+    "population": 30,
+    "max_iter": 56,
+    "runs": 1,
+    "seed": 42,
+    "lime_enabled": 0,
+    "lime_min_samples": 400,
+    "lime_selection_mode": "medoid",
+    "min_sfes_ratio": 0.04,
+    "max_fes": 300,
+    "warmup_fes": 15,
+    "restart": {
+      "enabled": 1,
+      "percent": 7.0,
+      "cooldown_fes_ratio": 0.04,
+      "cooldown_fes": 12,
+      "dominance_threshold": 0.9,
+      "fallback_formula": "x = LB + (UB - LB) * rand[0,1]"
+    }
+  }
+}

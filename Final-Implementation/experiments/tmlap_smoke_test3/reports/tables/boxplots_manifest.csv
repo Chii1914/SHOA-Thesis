@@ -1,0 +1,2 @@
+plot_type,instance_name,max_fes_budget,path
+boxplot_shoa_vs_pso,1.instancia_simple.txt,300,C:\Users\amsmaguirre\Desktop\SHOA-Thesis\Final-Implementation\experiments\tmlap_smoke_test3\reports\plots\boxplot_1.instancia_simple_fes300_SHOA_vs_PSO.png

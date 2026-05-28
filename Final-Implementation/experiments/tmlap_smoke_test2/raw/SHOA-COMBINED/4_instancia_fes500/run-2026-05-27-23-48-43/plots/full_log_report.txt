@@ -1,0 +1,25 @@
+SHOA-COMBINED FULL LOG REPORT
+============================
+target_fitness=0.0
+iterations_logged=11
+stagnation_events_logged=3
+
+ITERATION LOG
+-------------
+fn=4.instancia.txt | run=1 | iter=1 | fe=75 | best=2.71800000e+03 | stagnated=0 | event=none | lime_triggered=0 | diag=0 | restart_attempted=0 | restart_executed=0 | restart_source=none | restart_feature= | restart_feature_score=0.0000 | restart_count=0 | warmup_active=0
+fn=4.instancia.txt | run=1 | iter=2 | fe=120 | best=2.70000000e+03 | stagnated=0 | event=none | lime_triggered=0 | diag=0 | restart_attempted=0 | restart_executed=0 | restart_source=none | restart_feature= | restart_feature_score=0.0000 | restart_count=0 | warmup_active=0
+fn=4.instancia.txt | run=1 | iter=3 | fe=168 | best=2.70000000e+03 | stagnated=1 | event=stagnation_start | lime_triggered=0 | diag=0 | restart_attempted=1 | restart_executed=1 | restart_source=random_fallback | restart_feature= | restart_feature_score=0.0000 | restart_count=3 | warmup_active=0
+fn=4.instancia.txt | run=1 | iter=4 | fe=213 | best=2.70000000e+03 | stagnated=1 | event=none | lime_triggered=0 | diag=0 | restart_attempted=0 | restart_executed=0 | restart_source=none | restart_feature= | restart_feature_score=0.0000 | restart_count=0 | warmup_active=0
+fn=4.instancia.txt | run=1 | iter=5 | fe=258 | best=2.70000000e+03 | stagnated=1 | event=none | lime_triggered=0 | diag=0 | restart_attempted=0 | restart_executed=0 | restart_source=none | restart_feature= | restart_feature_score=0.0000 | restart_count=0 | warmup_active=0
+fn=4.instancia.txt | run=1 | iter=6 | fe=303 | best=2.70000000e+03 | stagnated=1 | event=none | lime_triggered=0 | diag=0 | restart_attempted=0 | restart_executed=0 | restart_source=none | restart_feature= | restart_feature_score=0.0000 | restart_count=0 | warmup_active=0
+fn=4.instancia.txt | run=1 | iter=7 | fe=348 | best=2.70000000e+03 | stagnated=1 | event=none | lime_triggered=0 | diag=0 | restart_attempted=0 | restart_executed=0 | restart_source=none | restart_feature= | restart_feature_score=0.0000 | restart_count=0 | warmup_active=0
+fn=4.instancia.txt | run=1 | iter=8 | fe=393 | best=2.70000000e+03 | stagnated=1 | event=none | lime_triggered=0 | diag=0 | restart_attempted=0 | restart_executed=0 | restart_source=none | restart_feature= | restart_feature_score=0.0000 | restart_count=0 | warmup_active=0
+fn=4.instancia.txt | run=1 | iter=9 | fe=438 | best=2.70000000e+03 | stagnated=1 | event=none | lime_triggered=0 | diag=0 | restart_attempted=0 | restart_executed=0 | restart_source=none | restart_feature= | restart_feature_score=0.0000 | restart_count=0 | warmup_active=0
+fn=4.instancia.txt | run=1 | iter=10 | fe=483 | best=2.70000000e+03 | stagnated=1 | event=none | lime_triggered=0 | diag=0 | restart_attempted=0 | restart_executed=0 | restart_source=none | restart_feature= | restart_feature_score=0.0000 | restart_count=0 | warmup_active=0
+fn=4.instancia.txt | run=1 | iter=11 | fe=528 | best=2.70000000e+03 | stagnated=1 | event=none | lime_triggered=0 | diag=0 | restart_attempted=0 | restart_executed=0 | restart_source=none | restart_feature= | restart_feature_score=0.0000 | restart_count=0 | warmup_active=0
+
+EVENT LOG
+---------
+fn=4.instancia.txt | run=1 | iter=1 | event=warmup_completed | fe=75 | sfes=0 | restart_executed=0 | restart_source=none | restart_feature= | restart_feature_score=0.0000
+fn=4.instancia.txt | run=1 | iter=3 | event=stagnation_start | fe=165 | sfes=45 | restart_executed=0 | restart_source=none | restart_feature= | restart_feature_score=0.0000
+fn=4.instancia.txt | run=1 | iter=3 | event=restart_executed | fe=168 | sfes=45 | restart_executed=1 | restart_source=random_fallback | restart_feature= | restart_feature_score=0.0000
