@@ -1,12 +1,13 @@
-"""Fail-safe orchestrator for MLPAP experiments with PSO, SHOA and SHOA-COMBINED.
+"""Fail-safe orchestrator for MLPAP experiments with SHOA and SHOA-COMBINED.
 
 Protocol
 --------
 - Instances: 100 JSON files (S01-S20, M01-M20, L01-L20, XL01-XL20, 2XL01-2XL20)
+- Execution order: S → M → L first, then XL, then 2XL
 - MaxFES budget is configurable per scale group (S/M/L/XL/2XL)
 - Default runs: 30 independent runs per algorithm × instance
 - Metrics: best_fitness (minimisation) + feasibility_rate + base_cost
-- Statistical comparison: SHOA vs PSO (Wilcoxon signed-rank per instance)
+- Statistical comparison: SHOA vs SHOA-COMBINED (Wilcoxon signed-rank per instance)
 - Contribution plots: SHOA-COMBINED only (via plot_combined_run.py)
 - Additional plots: convergence curves, boxplots, feasibility bars, summary heatmap
 """
@@ -196,8 +197,8 @@ def run_job_fail_safe(
             logger.info("Skipping %s: already completed", job.job_id)
             return job_state
 
-    max_attempts   = max(1, retries + 1)
-    attempts_done  = int(job_state.get("attempts", 0))
+    max_attempts  = max(1, retries + 1)
+    attempts_done = int(job_state.get("attempts", 0))
 
     before = (
         {str(p.resolve()) for p in job.output_dir.glob("run-*") if p.is_dir()}
@@ -206,8 +207,8 @@ def run_job_fail_safe(
 
     for attempt in range(attempts_done + 1, max_attempts + 1):
         job_state.update({
-            "status": "running",
-            "attempts": attempt,
+            "status":     "running",
+            "attempts":   attempt,
             "started_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         })
 
@@ -259,10 +260,6 @@ def run_job_fail_safe(
 # Budget / iteration helpers
 # ---------------------------------------------------------------------------
 
-def compute_pso_max_iter(max_fes: int, particles: int) -> int:
-    return max(1, (max_fes - particles) // max(1, particles))
-
-
 def compute_shoa_max_iter(max_fes: int, pop: int) -> int:
     per_iter = pop + pop // 2
     return max(1, (max_fes - pop) // max(1, per_iter))
@@ -313,40 +310,25 @@ def build_jobs(
 ) -> list[JobSpec]:
     py = args.python_executable or sys.executable
 
-    shoa_dir  = repo_root / "Final-Implementation" / "SHOA"         / "mlpap"
-    pso_dir   = repo_root / "Final-Implementation" / "PSO"          / "mlpap"
-    comb_dir  = repo_root / "Final-Implementation" / "SHOA-COMBINED"/ "mlpap"
+    shoa_dir = repo_root / "Final-Implementation" / "SHOA"          / "mlpap"
+    comb_dir = repo_root / "Final-Implementation" / "SHOA-COMBINED" / "mlpap"
+
+    # Run S, M, L first — then XL — then 2XL
+    priority = {s: i for i, s in enumerate(SCALE_ORDER)}
+    instances_ordered = sorted(instances, key=lambda t: (priority.get(t[1], 99), t[0]))
 
     jobs: list[JobSpec] = []
 
-    for inst_name, scale in instances:
-        max_fes = fes_by_scale.get(scale, DEFAULT_MAX_FES.get(scale, 50_000))
-        tag     = f"{Path(inst_name).stem}_fes{max_fes}"
-
-        pso_iter  = compute_pso_max_iter(max_fes=max_fes, particles=args.pso_particles)
+    for inst_name, scale in instances_ordered:
+        max_fes   = fes_by_scale.get(scale, DEFAULT_MAX_FES.get(scale, 50_000))
+        tag       = f"{Path(inst_name).stem}_fes{max_fes}"
         shoa_iter = compute_shoa_max_iter(max_fes=max_fes, pop=args.shoa_pop)
         comb_iter = compute_combined_max_iter(max_fes=max_fes, pop=args.combined_pop)
 
-        pso_out  = output_root / "raw" / "PSO"           / tag
         shoa_out = output_root / "raw" / "SHOA"          / tag
         comb_out = output_root / "raw" / "SHOA-COMBINED" / tag
 
         inst_dir_str = str(instance_dir.resolve())
-
-        pso_cmd = [
-            py, "run_pso_mlpap.py",
-            "--instances", inst_name,
-            "--instance-dir", inst_dir_str,
-            "--particles", str(args.pso_particles),
-            "--max-iter",  str(pso_iter),
-            "--runs",      str(args.runs),
-            "--seed",      str(args.seed),
-            "--w",         str(args.pso_w),
-            "--c1",        str(args.pso_c1),
-            "--c2",        str(args.pso_c2),
-            "--output-dir", str(pso_out.resolve()),
-            "--log-level",  args.log_level,
-        ]
 
         shoa_cmd = [
             py, "run_shoa_mlpap.py",
@@ -382,9 +364,8 @@ def build_jobs(
         ]
 
         for algo, cwd, cmd, out, n_iter in [
-            ("PSO",          pso_dir,  pso_cmd,  pso_out,  pso_iter),
-            ("SHOA",         shoa_dir, shoa_cmd, shoa_out, shoa_iter),
-            ("SHOA-COMBINED",comb_dir, comb_cmd, comb_out, comb_iter),
+            ("SHOA",          shoa_dir, shoa_cmd, shoa_out, shoa_iter),
+            ("SHOA-COMBINED", comb_dir, comb_cmd, comb_out, comb_iter),
         ]:
             jobs.append(JobSpec(
                 algorithm=algo,
@@ -523,34 +504,31 @@ def build_comparison_table(
 # Ranking
 # ---------------------------------------------------------------------------
 
-def rank_shoa_vs_pso(grouped: dict) -> tuple[list[dict], list[dict]]:
-    ranking, avg_acc = [], {}
-    for (algo, inst, fes), _ in grouped.items():
-        pass  # just enumerate keys
-
+def rank_shoa_vs_combined(grouped: dict) -> tuple[list[dict], list[dict]]:
     instance_budgets = sorted({(inst, fes) for (_, inst, fes) in grouped})
     rank_acc: dict[tuple[str, int, str], list[float]] = {}
+    ranking: list[dict] = []
 
     for inst, fes in instance_budgets:
-        shoa_items = grouped.get(("SHOA", inst, fes), [])
-        pso_items  = grouped.get(("PSO",  inst, fes), [])
-        if not shoa_items or not pso_items:
+        shoa_items = grouped.get(("SHOA",          inst, fes), [])
+        comb_items = grouped.get(("SHOA-COMBINED", inst, fes), [])
+        if not shoa_items or not comb_items:
             continue
         sm = float(np.mean([r["best_fitness"] for r in shoa_items]))
-        pm = float(np.mean([r["best_fitness"] for r in pso_items]))
-        if abs(sm - pm) <= 1e-15:
-            sr, pr = 1.5, 1.5
-        elif sm < pm:
-            sr, pr = 1.0, 2.0
+        cm = float(np.mean([r["best_fitness"] for r in comb_items]))
+        if abs(sm - cm) <= 1e-15:
+            sr, cr = 1.5, 1.5
+        elif sm < cm:
+            sr, cr = 1.0, 2.0
         else:
-            sr, pr = 2.0, 1.0
+            sr, cr = 2.0, 1.0
         ranking.append({
-            "instance_name": inst, "max_fes_budget": fes,
-            "SHOA_mean": sm, "PSO_mean": pm,
-            "SHOA_rank": sr, "PSO_rank": pr,
+            "instance_name": inst, "scale": _instance_scale(inst), "max_fes_budget": fes,
+            "SHOA_mean": sm, "SHOA-COMBINED_mean": cm,
+            "SHOA_rank": sr, "SHOA-COMBINED_rank": cr,
         })
-        rank_acc.setdefault(("all", fes, "SHOA"), []).append(sr)
-        rank_acc.setdefault(("all", fes, "PSO"),  []).append(pr)
+        rank_acc.setdefault(("all", fes, "SHOA"),          []).append(sr)
+        rank_acc.setdefault(("all", fes, "SHOA-COMBINED"), []).append(cr)
 
     avg_rows = [
         {"group": g, "max_fes_budget": fes, "algorithm": algo,
@@ -564,7 +542,7 @@ def rank_shoa_vs_pso(grouped: dict) -> tuple[list[dict], list[dict]]:
 # Wilcoxon
 # ---------------------------------------------------------------------------
 
-def wilcoxon_shoa_vs_pso(grouped: dict, alpha: float = 0.05) -> tuple[list[dict], list[dict]]:
+def wilcoxon_shoa_vs_combined(grouped: dict, alpha: float = 0.05) -> tuple[list[dict], list[dict]]:
     rows, summary = [], []
     instance_budgets = sorted({(inst, fes) for (_, inst, fes) in grouped})
     budgets = sorted({fes for (_, fes) in instance_budgets})
@@ -574,20 +552,20 @@ def wilcoxon_shoa_vs_pso(grouped: dict, alpha: float = 0.05) -> tuple[list[dict]
         for inst, fes in instance_budgets:
             if fes != budget:
                 continue
-            shoa = grouped.get(("SHOA", inst, budget), [])
-            pso  = grouped.get(("PSO",  inst, budget), [])
-            if not shoa or not pso:
+            shoa = grouped.get(("SHOA",          inst, budget), [])
+            comb = grouped.get(("SHOA-COMBINED", inst, budget), [])
+            if not shoa or not comb:
                 continue
 
             sb = {_to_int(r["run_number"]): float(r["best_fitness"]) for r in shoa}
-            pb = {_to_int(r["run_number"]): float(r["best_fitness"]) for r in pso}
-            common = sorted(set(sb) & set(pb))
+            cb = {_to_int(r["run_number"]): float(r["best_fitness"]) for r in comb}
+            common = sorted(set(sb) & set(cb))
             if common:
                 x = np.array([sb[k] for k in common], dtype=float)
-                y = np.array([pb[k] for k in common], dtype=float)
+                y = np.array([cb[k] for k in common], dtype=float)
             else:
                 x = np.array(sorted(float(r["best_fitness"]) for r in shoa), dtype=float)
-                y = np.array(sorted(float(r["best_fitness"]) for r in pso),  dtype=float)
+                y = np.array(sorted(float(r["best_fitness"]) for r in comb), dtype=float)
                 n = min(x.size, y.size); x, y = x[:n], y[:n]
 
             p_val = stat_val = 1.0
@@ -601,11 +579,11 @@ def wilcoxon_shoa_vs_pso(grouped: dict, alpha: float = 0.05) -> tuple[list[dict]
             except ValueError:
                 pass
 
-            sm, pm = float(np.mean(x)), float(np.mean(y))
+            sm, cm = float(np.mean(x)), float(np.mean(y))
             if p_val < alpha:
-                if sm < pm:
+                if sm < cm:
                     outcome = "+"; wins += 1
-                elif sm > pm:
+                elif sm > cm:
                     outcome = "-"; losses += 1
                 else:
                     outcome = "≈"; ties += 1
@@ -615,13 +593,13 @@ def wilcoxon_shoa_vs_pso(grouped: dict, alpha: float = 0.05) -> tuple[list[dict]
             rows.append({
                 "instance_name": inst, "scale": _instance_scale(inst),
                 "max_fes_budget": budget, "n_pairs": int(min(x.size, y.size)),
-                "SHOA_mean_fitness": sm, "PSO_mean_fitness": pm,
+                "SHOA_mean_fitness": sm, "SHOA-COMBINED_mean_fitness": cm,
                 "wilcoxon_statistic": stat_val, "p_value": p_val,
-                "alpha": alpha, "outcome_SHOA_vs_PSO": outcome,
+                "alpha": alpha, "outcome_SHOA_vs_COMBINED": outcome,
             })
 
         summary.append({
-            "max_fes_budget": budget, "opponent": "PSO",
+            "max_fes_budget": budget, "opponent": "SHOA-COMBINED",
             "wins_plus": wins, "ties_equal": ties, "losses_minus": losses,
         })
     return rows, summary
@@ -930,11 +908,6 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--max-fes-XL",  type=int, default=DEFAULT_MAX_FES["XL"])
     parser.add_argument("--max-fes-2XL", type=int, default=DEFAULT_MAX_FES["2XL"])
 
-    parser.add_argument("--pso-particles", type=int, default=40)
-    parser.add_argument("--pso-w",  type=float, default=0.7)
-    parser.add_argument("--pso-c1", type=float, default=1.7)
-    parser.add_argument("--pso-c2", type=float, default=1.7)
-
     parser.add_argument("--shoa-pop", type=int, default=30)
 
     parser.add_argument("--combined-pop", type=int, default=30)
@@ -1022,7 +995,7 @@ def main() -> None:
         args=args, repo_root=repo_root, output_root=output_root,
         instance_dir=instance_dir, instances=instances, fes_by_scale=fes_by_scale,
     )
-    logger.info("Built %d jobs (%d instances × 3 algorithms)", len(jobs), len(instances))
+    logger.info("Built %d jobs (%d instances × 2 algorithms)", len(jobs), len(instances))
 
     jobs_state = state.setdefault("jobs", {})
     for job in jobs:
@@ -1037,12 +1010,18 @@ def main() -> None:
 
     # ---- Execution ----
     if not args.skip_execution:
-        logger.info("Executing %d jobs sequentially", len(jobs))
-        for job in jobs:
+        logger.info("Executing %d jobs sequentially | order: S→M→L→XL→2XL", len(jobs))
+        for i, job in enumerate(jobs, 1):
+            logger.info("Job %d/%d: %s", i, len(jobs), job.job_id)
             state = load_json(state_path)
-            run_job_fail_safe(job, logs_dir=logs_dir, retries=args.retry,
-                              state=state, continue_on_failure=bool(args.continue_on_failure),
-                              logger=logger)
+            run_job_fail_safe(
+                job,
+                logs_dir=logs_dir,
+                retries=args.retry,
+                state=state,
+                continue_on_failure=bool(args.continue_on_failure),
+                logger=logger,
+            )
             save_json(state_path, state)
     else:
         logger.info("Execution skipped (--skip-execution)")
@@ -1096,13 +1075,13 @@ def main() -> None:
     write_csv(tables_dir / "comparison_table_mean_std.csv", comparison)
 
     # ---- Ranking ----
-    ranking_rows, ranking_avg = rank_shoa_vs_pso(grouped)
-    write_csv(tables_dir / "ranking_shoa_vs_pso_by_instance.csv", ranking_rows)
-    write_csv(tables_dir / "ranking_shoa_vs_pso_average.csv", ranking_avg)
+    ranking_rows, ranking_avg = rank_shoa_vs_combined(grouped)
+    write_csv(tables_dir / "ranking_shoa_vs_combined_by_instance.csv", ranking_rows)
+    write_csv(tables_dir / "ranking_shoa_vs_combined_average.csv", ranking_avg)
 
     # ---- Wilcoxon ----
-    wilcoxon_rows, wil_summary = wilcoxon_shoa_vs_pso(grouped)
-    write_csv(tables_dir / "wilcoxon_shoa_vs_pso.csv", wilcoxon_rows)
+    wilcoxon_rows, wil_summary = wilcoxon_shoa_vs_combined(grouped)
+    write_csv(tables_dir / "wilcoxon_shoa_vs_combined.csv", wilcoxon_rows)
     write_csv(tables_dir / "wins_ties_losses.csv", wil_summary)
     logger.info("Written statistical tables")
 
@@ -1144,12 +1123,14 @@ def main() -> None:
     # ---- Statistical notes ----
     notes = [
         "Statistical protocol notes (MLPAP):",
+        "- Algorithms: SHOA (Sea-Horse Optimizer) and SHOA-COMBINED (SHOA + LIME + stagnation detection).",
+        "- Execution order: S → M → L first, then XL, then 2XL.",
         "- Metric: best_fitness (penalized objective, lower is better).",
         "- base_cost: raw objective without penalty (reported separately).",
         "- feasibility_rate: fraction of runs with v(z) == 0.",
-        "- Wilcoxon signed-rank: two-sided, alpha=0.05, SHOA vs PSO only.",
-        "- '+' = SHOA significantly better than PSO.",
-        "- '-' = PSO significantly better than SHOA.",
+        "- Wilcoxon signed-rank: two-sided, alpha=0.05, SHOA vs SHOA-COMBINED.",
+        "- '+' = SHOA significantly better than SHOA-COMBINED.",
+        "- '-' = SHOA-COMBINED significantly better than SHOA.",
         "- '≈' = no significant difference.",
         "- LIME contribution plots generated only for SHOA-COMBINED runs.",
         f"- Instances: {len(instances)} total across scales S/M/L/XL/2XL.",

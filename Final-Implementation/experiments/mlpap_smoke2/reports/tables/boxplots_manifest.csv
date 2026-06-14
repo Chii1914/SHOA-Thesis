@@ -1,0 +1,4 @@
+plot_type,instance_name,max_fes_budget,path
+boxplot,S01.json,1500,/Users/maximilianoaguirre/Desktop/SHOA-Thesis/Final-Implementation/experiments/mlpap_smoke2/reports/plots/boxplots/boxplot_S01_fes1500.png
+boxplot,S02.json,1500,/Users/maximilianoaguirre/Desktop/SHOA-Thesis/Final-Implementation/experiments/mlpap_smoke2/reports/plots/boxplots/boxplot_S02_fes1500.png
+boxplot,M01.json,2000,/Users/maximilianoaguirre/Desktop/SHOA-Thesis/Final-Implementation/experiments/mlpap_smoke2/reports/plots/boxplots/boxplot_M01_fes2000.png

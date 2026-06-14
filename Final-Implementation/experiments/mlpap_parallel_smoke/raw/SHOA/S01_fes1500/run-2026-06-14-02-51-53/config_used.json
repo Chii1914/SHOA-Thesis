@@ -1,0 +1,15 @@
+{
+  "run_id": "run-2026-06-14-02-51-53",
+  "timestamp": "2026-06-14T02:51:53Z",
+  "algorithm": "SHOA",
+  "problem": "MLPAP",
+  "config": {
+    "instances": [
+      "S01.json"
+    ],
+    "population": 20,
+    "max_iter": 49,
+    "runs": 2,
+    "seed": 42
+  }
+}

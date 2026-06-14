@@ -1,0 +1,13 @@
+Statistical protocol notes (MLPAP):
+- Algorithms: SHOA (Sea-Horse Optimizer) and SHOA-COMBINED (SHOA + LIME + stagnation detection).
+- Execution order: S → M → L first, then XL, then 2XL.
+- Metric: best_fitness (penalized objective, lower is better).
+- base_cost: raw objective without penalty (reported separately).
+- feasibility_rate: fraction of runs with v(z) == 0.
+- Wilcoxon signed-rank: two-sided, alpha=0.05, SHOA vs SHOA-COMBINED.
+- '+' = SHOA significantly better than SHOA-COMBINED.
+- '-' = SHOA-COMBINED significantly better than SHOA.
+- '≈' = no significant difference.
+- LIME contribution plots generated only for SHOA-COMBINED runs.
+- Instances: 3 total across scales S/M/L/XL/2XL.
+- MaxFES by scale: {'S': 1500, 'M': 2000, 'L': 200000, 'XL': 500000, '2XL': 1000000}

@@ -1,0 +1,2 @@
+function_name,runs_completed,mean_best_fitness,std_best_fitness,min_best_fitness,max_best_fitness
+S01.json,2,10238.006223819159,3.141859140476299,10234.864364678682,10241.148082959635

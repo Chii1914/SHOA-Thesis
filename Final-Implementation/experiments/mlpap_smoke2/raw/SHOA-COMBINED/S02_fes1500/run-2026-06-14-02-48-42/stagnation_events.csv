@@ -1,0 +1,10 @@
+run_id,timestamp,function_name,dimension,iteration,event,fe,sfes,min_sfes,last_improvement_fe,warmup_active,warmup_fes,restart_attempted,restart_executed,restart_blocked_by_cooldown,restart_source,restart_feature,restart_feature_score,restart_count,restart_cooldown_fes,restart_cooldown_remaining_fes,lime_triggered,lime_trigger_source,run_number
+run-2026-06-14-02-48-42,2026-06-14T02:48:42Z,S02.json,20,2,warmup_completed,80,0,60,80,0,75,0,0,0,none,,0.0,0,60,0,0,none,1
+run-2026-06-14-02-48-42,2026-06-14T02:48:42Z,S02.json,20,4,stagnation_start,140,60,60,80,0,75,0,0,0,none,,0.0,0,60,0,0,none,1
+run-2026-06-14-02-48-42,2026-06-14T02:48:42Z,S02.json,20,4,restart_executed,142,60,60,80,0,75,1,1,0,random_fallback,mag_predacion_mean,0.17323193243026888,2,60,60,1,stagnation_start,1
+run-2026-06-14-02-48-42,2026-06-14T02:48:42Z,S02.json,20,2,stagnation_start,80,60,60,20,0,75,0,0,0,none,,0.0,0,60,0,0,none,2
+run-2026-06-14-02-48-42,2026-06-14T02:48:42Z,S02.json,20,2,warmup_completed,80,60,60,20,0,75,0,0,0,none,,0.0,0,60,0,0,none,2
+run-2026-06-14-02-48-42,2026-06-14T02:48:42Z,S02.json,20,2,restart_executed,82,60,60,20,0,75,1,1,0,random_fallback,,0.0,2,60,60,0,none,2
+run-2026-06-14-02-48-42,2026-06-14T02:48:42Z,S02.json,20,10,recovered,322,0,60,322,0,75,0,0,0,none,,0.0,0,60,0,0,none,2
+run-2026-06-14-02-48-42,2026-06-14T02:48:42Z,S02.json,20,14,stagnation_start,442,60,60,382,0,75,0,0,0,none,,0.0,0,60,0,0,none,2
+run-2026-06-14-02-48-42,2026-06-14T02:48:42Z,S02.json,20,14,restart_executed,444,60,60,382,0,75,1,1,0,random_fallback,distance_to_elite,0.23748785187984872,2,60,60,1,stagnation_start,2

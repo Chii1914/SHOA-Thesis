@@ -1,0 +1,10 @@
+run_id,timestamp,function_name,dimension,iteration,event,fe,sfes,min_sfes,last_improvement_fe,warmup_active,warmup_fes,restart_attempted,restart_executed,restart_blocked_by_cooldown,restart_source,restart_feature,restart_feature_score,restart_count,restart_cooldown_fes,restart_cooldown_remaining_fes,lime_triggered,lime_trigger_source,run_number
+run-2026-06-14-02-48-39,2026-06-14T02:48:39Z,S01.json,20,2,warmup_completed,80,0,60,80,0,75,0,0,0,none,,0.0,0,60,0,0,none,1
+run-2026-06-14-02-48-39,2026-06-14T02:48:39Z,S01.json,20,5,stagnation_start,170,60,60,110,0,75,0,0,0,none,,0.0,0,60,0,0,none,1
+run-2026-06-14-02-48-39,2026-06-14T02:48:39Z,S01.json,20,5,restart_executed,172,60,60,110,0,75,1,1,0,random_fallback,alpha,0.19869619479616668,2,60,60,1,stagnation_start,1
+run-2026-06-14-02-48-39,2026-06-14T02:48:39Z,S01.json,20,47,recovered,1432,0,60,1432,0,75,0,0,0,none,,0.0,0,60,0,0,none,1
+run-2026-06-14-02-48-39,2026-06-14T02:48:39Z,S01.json,20,49,stagnation_start,1492,60,60,1432,0,75,0,0,0,none,,0.0,0,60,0,0,none,1
+run-2026-06-14-02-48-39,2026-06-14T02:48:39Z,S01.json,20,49,restart_executed,1494,60,60,1432,0,75,1,1,0,random_fallback,mag_predacion_mean,0.13905373357684217,2,60,60,1,stagnation_start,1
+run-2026-06-14-02-48-39,2026-06-14T02:48:39Z,S01.json,20,2,warmup_completed,80,30,60,50,0,75,0,0,0,none,,0.0,0,60,0,0,none,2
+run-2026-06-14-02-48-39,2026-06-14T02:48:39Z,S01.json,20,3,stagnation_start,110,60,60,50,0,75,0,0,0,none,,0.0,0,60,0,0,none,2
+run-2026-06-14-02-48-39,2026-06-14T02:48:39Z,S01.json,20,3,restart_executed,112,60,60,50,0,75,1,1,0,random_fallback,,0.0,2,60,60,0,none,2

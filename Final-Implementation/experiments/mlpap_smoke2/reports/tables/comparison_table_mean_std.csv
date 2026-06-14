@@ -1,0 +1,4 @@
+instance_name,scale,SHOA,SHOA_feasibility_rate,SHOA-COMBINED,SHOA-COMBINED_feasibility_rate
+S01.json,S,1.024737e+04 +/- 7.068903e+00,0.000,5.229320e+03 +/- 7.073484e+03,0.500
+S02.json,S,1.528217e+04 +/- 7.084243e+03,0.000,1.027104e+04 +/- 0.000000e+00,0.000
+M01.json,M,6.099564e+04 +/- 1.210442e+04,0.000,4.037285e+04 +/- 2.058275e+04,0.000

@@ -1,0 +1,28 @@
+{
+  "run_id": "run-2026-06-14-02-51-54",
+  "timestamp": "2026-06-14T02:51:54Z",
+  "algorithm": "SHOA-COMBINED",
+  "problem": "MLPAP",
+  "config": {
+    "instances": [
+      "S02.json"
+    ],
+    "population": 20,
+    "max_iter": 99,
+    "runs": 2,
+    "seed": 42,
+    "lime_enabled": 1,
+    "lime_min_samples": 50,
+    "lime_selection_mode": "medoid",
+    "min_sfes_ratio": 0.04,
+    "max_fes": 1500,
+    "warmup_fes": 75,
+    "restart": {
+      "enabled": 1,
+      "percent": 7.0,
+      "cooldown_fes_ratio": 0.04,
+      "cooldown_fes": 60,
+      "dominance_threshold": 0.9
+    }
+  }
+}

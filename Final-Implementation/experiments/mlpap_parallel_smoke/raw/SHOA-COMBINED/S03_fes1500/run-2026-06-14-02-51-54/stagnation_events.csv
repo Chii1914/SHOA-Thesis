@@ -1,0 +1,13 @@
+run_id,timestamp,function_name,dimension,iteration,event,fe,sfes,min_sfes,last_improvement_fe,warmup_active,warmup_fes,restart_attempted,restart_executed,restart_blocked_by_cooldown,restart_source,restart_feature,restart_feature_score,restart_count,restart_cooldown_fes,restart_cooldown_remaining_fes,lime_triggered,lime_trigger_source,run_number
+run-2026-06-14-02-51-54,2026-06-14T02:51:54Z,S03.json,20,2,warmup_completed,80,0,60,80,0,75,0,0,0,none,,0.0,0,60,0,0,none,1
+run-2026-06-14-02-51-54,2026-06-14T02:51:54Z,S03.json,20,7,stagnation_start,230,60,60,170,0,75,0,0,0,none,,0.0,0,60,0,0,none,1
+run-2026-06-14-02-51-54,2026-06-14T02:51:54Z,S03.json,20,7,restart_executed,232,60,60,170,0,75,1,1,0,random_fallback,mag_predacion_max,0.17752440695476776,2,60,60,1,stagnation_start,1
+run-2026-06-14-02-51-54,2026-06-14T02:51:54Z,S03.json,20,9,recovered,292,0,60,292,0,75,0,0,0,none,,0.0,0,60,0,0,none,1
+run-2026-06-14-02-51-54,2026-06-14T02:51:54Z,S03.json,20,11,stagnation_start,352,60,60,292,0,75,0,0,0,none,,0.0,0,60,0,0,none,1
+run-2026-06-14-02-51-54,2026-06-14T02:51:54Z,S03.json,20,11,restart_executed,354,60,60,292,0,75,1,1,0,random_fallback,mag_predacion_mean,0.1847690165826607,2,60,60,1,stagnation_start,1
+run-2026-06-14-02-51-54,2026-06-14T02:51:54Z,S03.json,20,2,warmup_completed,80,30,60,50,0,75,0,0,0,none,,0.0,0,60,0,0,none,2
+run-2026-06-14-02-51-54,2026-06-14T02:51:54Z,S03.json,20,3,stagnation_start,110,60,60,50,0,75,0,0,0,none,,0.0,0,60,0,0,none,2
+run-2026-06-14-02-51-54,2026-06-14T02:51:54Z,S03.json,20,3,restart_executed,112,60,60,50,0,75,1,1,0,random_fallback,,0.0,2,60,60,0,none,2
+run-2026-06-14-02-51-54,2026-06-14T02:51:54Z,S03.json,20,12,recovered,382,0,60,382,0,75,0,0,0,none,,0.0,0,60,0,0,none,2
+run-2026-06-14-02-51-54,2026-06-14T02:51:54Z,S03.json,20,16,stagnation_start,502,60,60,442,0,75,0,0,0,none,,0.0,0,60,0,0,none,2
+run-2026-06-14-02-51-54,2026-06-14T02:51:54Z,S03.json,20,16,restart_executed,504,60,60,442,0,75,1,1,0,random_fallback,mag_predacion_max,0.23961198871665462,2,60,60,1,stagnation_start,2
