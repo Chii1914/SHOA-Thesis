@@ -1,0 +1,3 @@
+plot_type,instance_name,max_fes_budget,path
+convergence,S01.json,1500,/Users/maximilianoaguirre/Desktop/SHOA-Thesis/Final-Implementation/experiments/mlpap_smoke/reports/plots/convergence/convergence_S01_fes1500.png
+convergence,S02.json,1500,/Users/maximilianoaguirre/Desktop/SHOA-Thesis/Final-Implementation/experiments/mlpap_smoke/reports/plots/convergence/convergence_S02_fes1500.png

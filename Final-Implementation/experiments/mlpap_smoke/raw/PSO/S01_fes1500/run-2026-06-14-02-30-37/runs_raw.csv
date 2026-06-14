@@ -1,0 +1,3 @@
+run_id,timestamp,function_name,instance_name,instance_id,scale,run_number,seed,n_clients,n_hubs,particles,max_iter,w,c1,c2,best_fitness,base_cost,feasible_best_solution,violation_total,fes_used,elapsed_seconds
+run-2026-06-14-02-30-37,2026-06-14T02:30:37Z,S01.json,S01.json,S01,Small,1,709,20,8,20,74,0.7,1.7,1.7,10230.17737288566,230.17737288566013,0,1.0,1500,0.14445633298601024
+run-2026-06-14-02-30-37,2026-06-14T02:30:37Z,S01.json,S01.json,S01,Small,2,710,20,8,20,74,0.7,1.7,1.7,10230.7812770957,230.78127709569986,0,1.0,1500,0.13398049998795614

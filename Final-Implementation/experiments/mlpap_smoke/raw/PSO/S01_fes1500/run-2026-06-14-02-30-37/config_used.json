@@ -1,0 +1,18 @@
+{
+  "run_id": "run-2026-06-14-02-30-37",
+  "timestamp": "2026-06-14T02:30:37Z",
+  "algorithm": "PSO",
+  "problem": "MLPAP",
+  "config": {
+    "instances": [
+      "S01.json"
+    ],
+    "particles": 20,
+    "max_iter": 74,
+    "runs": 2,
+    "seed": 42,
+    "w": 0.7,
+    "c1": 1.7,
+    "c2": 1.7
+  }
+}
