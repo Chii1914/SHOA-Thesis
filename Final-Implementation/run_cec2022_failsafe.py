@@ -993,7 +993,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
         help="MaxFEs used only by SHOA-COMBINED (does not affect PSO/SHOA).",
     )
     parser.add_argument("--combined-rescue-enabled", action="store_true", default=True)
-    parser.add_argument("--combined-restart-percent", type=float, default=10.0)
+    parser.add_argument("--combined-restart-percent", type=float, default=7.0)
     parser.add_argument("--combined-restart-cooldown-ratio", type=float, default=0.04)
     parser.add_argument("--combined-restart-dominance-threshold", type=float, default=0.90)
     parser.add_argument("--combined-lime-min-samples", type=int, default=1000)
