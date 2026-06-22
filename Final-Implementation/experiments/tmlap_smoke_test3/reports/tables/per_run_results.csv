@@ -1,4 +1,0 @@
-algorithm,instance_name,max_fes_budget,run_number,best_fitness,base_cost,feasible,overflow_total,distance_violation,fes_used,run_dir
-PSO,1.instancia_simple.txt,300,1,89.0,89.0,1,0,0.0,280,C:\Users\amsmaguirre\Desktop\SHOA-Thesis\Final-Implementation\experiments\tmlap_smoke_test3\raw\PSO\1_instancia_simple_fes300\run-2026-05-27-23-56-32
-SHOA,1.instancia_simple.txt,300,1,89.0,89.0,1,0,0.0,300,C:\Users\amsmaguirre\Desktop\SHOA-Thesis\Final-Implementation\experiments\tmlap_smoke_test3\raw\SHOA\1_instancia_simple_fes300\run-2026-05-27-23-56-33
-SHOA-COMBINED,1.instancia_simple.txt,300,1,89.0,89.0,1,0,0.0,303,C:\Users\amsmaguirre\Desktop\SHOA-Thesis\Final-Implementation\experiments\tmlap_smoke_test3\raw\SHOA-COMBINED\1_instancia_simple_fes300\run-2026-05-27-23-56-36

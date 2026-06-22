@@ -1,9 +1,0 @@
-instance_name,max_fes_budget,PSO,PSO_feasibility_rate,SHOA,SHOA_feasibility_rate,SHOA-COMBINED,SHOA-COMBINED_feasibility_rate
-1.instancia_simple.txt,300,8.900000e+01 +/- 0.000000e+00,1.000,8.900000e+01 +/- 0.000000e+00,1.000,8.900000e+01 +/- 0.000000e+00,1.000
-1.instancia_simple.txt,500,NA,NA,NA,NA,NA,NA
-2.instancia_mediana.txt,300,1.560000e+02 +/- 0.000000e+00,1.000,1.630000e+02 +/- 0.000000e+00,1.000,1.550000e+02 +/- 0.000000e+00,1.000
-2.instancia_mediana.txt,500,NA,NA,NA,NA,NA,NA
-3.instancia_dura.txt,300,3.110000e+02 +/- 0.000000e+00,1.000,3.150000e+02 +/- 0.000000e+00,1.000,3.150000e+02 +/- 0.000000e+00,1.000
-3.instancia_dura.txt,500,NA,NA,NA,NA,NA,NA
-4.instancia.txt,300,2.698000e+03 +/- 0.000000e+00,1.000,2.711000e+03 +/- 0.000000e+00,1.000,2.654000e+03 +/- 0.000000e+00,1.000
-4.instancia.txt,500,2.650000e+03 +/- 0.000000e+00,1.000,2.694000e+03 +/- 0.000000e+00,1.000,2.700000e+03 +/- 0.000000e+00,1.000

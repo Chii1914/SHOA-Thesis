@@ -10,6 +10,7 @@ Protocol
 - Statistical comparison: SHOA vs SHOA-COMBINED (Wilcoxon signed-rank per instance)
 - Contribution plots: SHOA-COMBINED only (via plot_combined_run.py)
 - Additional plots: convergence curves, boxplots, feasibility bars, summary heatmap
+- Algorithms: SHOA, SHOA-COMBINED (200 jobs: 100 instances × 2 algorithms)
 """
 
 from __future__ import annotations
@@ -300,10 +301,6 @@ def discover_instances(
 # Job builder
 # ---------------------------------------------------------------------------
 
-def compute_pso_max_iter(max_fes: int, particles: int) -> int:
-    return max(1, (max_fes - particles) // max(1, particles))
-
-
 def build_jobs(
     args: argparse.Namespace,
     repo_root: Path,
@@ -316,7 +313,6 @@ def build_jobs(
 
     shoa_dir = repo_root / "Final-Implementation" / "SHOA"          / "mlpap"
     comb_dir = repo_root / "Final-Implementation" / "SHOA-COMBINED" / "mlpap"
-    pso_dir  = repo_root / "Final-Implementation" / "PSO"           / "mlpap"
 
     # Run S, M, L first — then XL — then 2XL
     priority = {s: i for i, s in enumerate(SCALE_ORDER)}
@@ -329,11 +325,9 @@ def build_jobs(
         tag       = f"{Path(inst_name).stem}_fes{max_fes}"
         shoa_iter = compute_shoa_max_iter(max_fes=max_fes, pop=args.shoa_pop)
         comb_iter = compute_combined_max_iter(max_fes=max_fes, pop=args.combined_pop)
-        pso_iter  = compute_pso_max_iter(max_fes=max_fes, particles=args.pso_particles)
 
         shoa_out = output_root / "raw" / "SHOA"          / tag
         comb_out = output_root / "raw" / "SHOA-COMBINED" / tag
-        pso_out  = output_root / "raw" / "PSO"           / tag
 
         inst_dir_str = str(instance_dir.resolve())
 
@@ -370,25 +364,9 @@ def build_jobs(
             "--log-level",  args.log_level,
         ]
 
-        pso_cmd = [
-            py, "run_pso_mlpap.py",
-            "--instances", inst_name,
-            "--instance-dir", inst_dir_str,
-            "--particles", str(args.pso_particles),
-            "--max-iter",  str(pso_iter),
-            "--runs",      str(args.runs),
-            "--seed",      str(args.seed),
-            "--w",         str(args.pso_w),
-            "--c1",        str(args.pso_c1),
-            "--c2",        str(args.pso_c2),
-            "--output-dir", str(pso_out.resolve()),
-            "--log-level",  args.log_level,
-        ]
-
         for algo, cwd, cmd, out, n_iter in [
             ("SHOA",          shoa_dir, shoa_cmd, shoa_out, shoa_iter),
             ("SHOA-COMBINED", comb_dir, comb_cmd, comb_out, comb_iter),
-            ("PSO",           pso_dir,  pso_cmd,  pso_out,  pso_iter),
         ]:
             jobs.append(JobSpec(
                 algorithm=algo,
@@ -935,7 +913,7 @@ def generate_combined_plots(
 
 def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Fail-safe MLPAP orchestrator for PSO, SHOA, SHOA-COMBINED"
+        description="Fail-safe MLPAP orchestrator for SHOA and SHOA-COMBINED"
     )
 
     parser.add_argument("--instances", type=str, default="all",
@@ -953,11 +931,6 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--max-fes-2XL", type=int, default=DEFAULT_MAX_FES["2XL"])
 
     parser.add_argument("--shoa-pop", type=int, default=30)
-
-    parser.add_argument("--pso-particles", type=int, default=30)
-    parser.add_argument("--pso-w",  type=float, default=0.7)
-    parser.add_argument("--pso-c1", type=float, default=1.7)
-    parser.add_argument("--pso-c2", type=float, default=1.7)
 
     parser.add_argument("--combined-pop", type=int, default=30)
     parser.add_argument("--combined-restart-enabled", action="store_true", default=True)
@@ -1044,7 +1017,7 @@ def main() -> None:
         args=args, repo_root=repo_root, output_root=output_root,
         instance_dir=instance_dir, instances=instances, fes_by_scale=fes_by_scale,
     )
-    logger.info("Built %d jobs (%d instances × 3 algorithms: SHOA, SHOA-COMBINED, PSO)", len(jobs), len(instances))
+    logger.info("Built %d jobs (%d instances × 2 algorithms: SHOA, SHOA-COMBINED)", len(jobs), len(instances))
 
     jobs_state = state.setdefault("jobs", {})
     for job in jobs:
@@ -1126,8 +1099,6 @@ def main() -> None:
     # ---- Ranking (all 3 pairings) ----
     _pairs = [
         ("SHOA", "SHOA-COMBINED"),
-        ("SHOA", "PSO"),
-        ("SHOA-COMBINED", "PSO"),
     ]
     all_wtl_rows: list[dict] = []
     for algo_a, algo_b in _pairs:
@@ -1181,13 +1152,12 @@ def main() -> None:
     # ---- Statistical notes ----
     notes = [
         "Statistical protocol notes (MLPAP):",
-        "- Algorithms: SHOA, SHOA-COMBINED (SHOA + LIME + stagnation detection), PSO.",
+        "- Algorithms: SHOA, SHOA-COMBINED (SHOA + LIME + stagnation detection).",
         "- Execution order: S → M → L first, then XL, then 2XL.",
         "- Metric: best_fitness (penalized objective, lower is better).",
         "- base_cost: raw objective without penalty (reported separately).",
         "- feasibility_rate: fraction of runs with v(z) == 0.",
-        "- Wilcoxon signed-rank: two-sided, alpha=0.05, all 3 pairwise comparisons:",
-        "    SHOA vs SHOA-COMBINED | SHOA vs PSO | SHOA-COMBINED vs PSO",
+        "- Wilcoxon signed-rank: two-sided, alpha=0.05, comparison: SHOA vs SHOA-COMBINED.",
         "- In each comparison: '+' = algo_a significantly better (lower fitness),",
         "  '-' = algo_b significantly better, '≈' = no significant difference.",
         "- Ranking: 1 = better mean fitness, 1.5 = tie, 2 = worse.",

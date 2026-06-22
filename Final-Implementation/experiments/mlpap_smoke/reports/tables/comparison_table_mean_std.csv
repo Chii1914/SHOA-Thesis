@@ -1,3 +1,0 @@
-instance_name,scale,PSO,PSO_feasibility_rate,SHOA,SHOA_feasibility_rate,SHOA-COMBINED,SHOA-COMBINED_feasibility_rate
-S01.json,S,1.023048e+04 +/- 4.270248e-01,0.000,1.024614e+04 +/- 1.232578e+00,0.000,1.024997e+04 +/- 5.946448e+00,0.000
-S02.json,S,1.026119e+04 +/- 1.737036e+01,0.000,1.027195e+04 +/- 1.282314e+00,0.000,1.027017e+04 +/- 1.235496e+00,0.000

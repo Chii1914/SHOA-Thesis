@@ -320,74 +320,66 @@ def SHO_HYBRID(
         beta = np.random.randn(pop, dim)
         elite = np.tile(elite_position, (pop, 1))
 
-        # Motor behavior
+        # Motor behavior — fully vectorised (same semantics, no Python inner loops)
         r1 = np.random.randn(pop)
         step_length = levy(pop, dim, 1.5)
-        sea_horses_new1 = np.zeros_like(sea_horses)
 
-        theta_means = np.zeros(pop, dtype=float)
-        theta_active = np.zeros(pop, dtype=float)
-        mag_levy_stats = np.zeros((pop, 3), dtype=float)
-        mag_browniano_stats = np.zeros((pop, 3), dtype=float)
+        rand_theta      = np.random.rand(pop, dim)
+        theta           = rand_theta * (2.0 * np.pi)
+        row             = u * np.exp(theta * v)
+        levy_branch     = previous_population + step_length * (
+            (elite - previous_population) * row * np.cos(theta) * np.sin(theta) * theta + elite
+        )
+        rand_brown          = np.random.rand(pop, dim)
+        browniano_term_mat  = rand_brown * l * beta * (previous_population - beta * elite)
+        brown_branch        = previous_population + browniano_term_mat
 
-        for i in range(pop):
-            theta_values: list[float] = []
-            levy_values: list[float] = []
-            browniano_values: list[float] = []
-
-            for j in range(dim):
-                if r1[i] > 0:
-                    rand_theta = np.random.rand()
-                    theta = rand_theta * 2 * np.pi
-                    row = u * np.exp(theta * v)
-                    x = row * np.cos(theta)
-                    y = row * np.sin(theta)
-                    z = row * theta
-                    sea_horses_new1[i, j] = previous_population[i, j] + step_length[i, j] * (
-                        (elite[i, j] - previous_population[i, j]) * x * y * z + elite[i, j]
-                    )
-                    theta_values.append(float(theta))
-                    levy_values.append(float(abs(step_length[i, j])))
-                else:
-                    browniano_term = (
-                        np.random.rand()
-                        * l
-                        * beta[i, j]
-                        * (previous_population[i, j] - beta[i, j] * elite[i, j])
-                    )
-                    sea_horses_new1[i, j] = previous_population[i, j] + browniano_term
-                    browniano_values.append(float(abs(browniano_term)))
-
-            if theta_values:
-                theta_means[i] = float(np.mean(theta_values))
-                theta_active[i] = 1.0
-
-            mag_levy_stats[i, :] = np.array(_safe_stats(levy_values), dtype=float)
-            mag_browniano_stats[i, :] = np.array(_safe_stats(browniano_values), dtype=float)
-
+        r1_mask         = r1[:, None] > 0      # (pop, 1) — True for full row when levy mode
+        sea_horses_new1 = np.where(r1_mask, levy_branch, brown_branch)
         sea_horses_new1 = np.clip(sea_horses_new1, lb_vec, ub_vec)
 
-        # Predation behavior
-        sea_horses_new2 = np.zeros_like(sea_horses)
-        r2 = np.random.rand(pop)
+        # Diagnostic statistics — computed from matrices (identical values to per-loop version)
+        # r1 is per-agent: all dim elements of an agent share the same mode (levy OR brownian)
+        theta_active = (r1 > 0).astype(float)                          # (pop,)
+        theta_means  = np.where(r1 > 0, np.mean(theta, axis=1), 0.0)  # (pop,)
+
+        levy_abs  = np.abs(step_length)         # (pop, dim)
+        brown_abs = np.abs(browniano_term_mat)  # (pop, dim)
+
+        mag_levy_stats     = np.zeros((pop, 3), dtype=float)
+        mag_browniano_stats = np.zeros((pop, 3), dtype=float)
+        _levy_mask = theta_active > 0
+        _brow_mask = ~_levy_mask
+        if _levy_mask.any():
+            mag_levy_stats[_levy_mask, 0] = np.mean(levy_abs[_levy_mask], axis=1)
+            mag_levy_stats[_levy_mask, 1] = np.max( levy_abs[_levy_mask], axis=1)
+            mag_levy_stats[_levy_mask, 2] = np.std( levy_abs[_levy_mask], axis=1)
+        if _brow_mask.any():
+            mag_browniano_stats[_brow_mask, 0] = np.mean(brown_abs[_brow_mask], axis=1)
+            mag_browniano_stats[_brow_mask, 1] = np.max( brown_abs[_brow_mask], axis=1)
+            mag_browniano_stats[_brow_mask, 2] = np.std( brown_abs[_brow_mask], axis=1)
+
+        # Predation behavior — fully vectorised
+        r2    = np.random.rand(pop)
         alpha = (1 - t / max_iter) ** (2 * t / max_iter)
 
-        mag_predacion_stats = np.zeros((pop, 3), dtype=float)
+        r2_mask      = r2[:, None] >= 0.1
+        rA           = np.random.rand(pop, dim)
+        rB           = np.random.rand(pop, dim)
+        stochastic_A = rA * sea_horses_new1
+        stochastic_B = rB * elite
+        stochastic_mat = np.where(r2_mask, stochastic_A, stochastic_B)
 
-        for i in range(pop):
-            predacion_values: list[float] = []
-            for j in range(dim):
-                if r2[i] >= 0.1:
-                    stochastic = np.random.rand() * sea_horses_new1[i, j]
-                    sea_horses_new2[i, j] = alpha * (elite[i, j] - stochastic) + (1 - alpha) * elite[i, j]
-                else:
-                    stochastic = np.random.rand() * elite[i, j]
-                    sea_horses_new2[i, j] = (1 - alpha) * (sea_horses_new1[i, j] - stochastic) + alpha * sea_horses_new1[i, j]
-                predacion_values.append(float(abs(stochastic)))
-
-            mag_predacion_stats[i, :] = np.array(_safe_stats(predacion_values), dtype=float)
-
+        brA             = alpha * (elite - stochastic_A) + (1 - alpha) * elite
+        brB             = (1 - alpha) * (sea_horses_new1 - stochastic_B) + alpha * sea_horses_new1
+        sea_horses_new2 = np.where(r2_mask, brA, brB)
         sea_horses_new2 = np.clip(sea_horses_new2, lb_vec, ub_vec)
+
+        stoch_abs = np.abs(stochastic_mat)      # (pop, dim)
+        mag_predacion_stats = np.zeros((pop, 3), dtype=float)
+        mag_predacion_stats[:, 0] = np.mean(stoch_abs, axis=1)
+        mag_predacion_stats[:, 1] = np.max( stoch_abs, axis=1)
+        mag_predacion_stats[:, 2] = np.std( stoch_abs, axis=1)
         sea_horses_fitness1 = np.array([fobj(ind) for ind in sea_horses_new2], dtype=float)
 
         distance_to_elite = np.linalg.norm(previous_population - elite, axis=1)
@@ -443,10 +435,8 @@ def SHO_HYBRID(
         sea_horses_father = sea_horses_new2[index[:half], :]
         sea_horses_mother = sea_horses_new2[index[half:pop], :]
 
-        si = np.zeros((half, dim), dtype=float)
-        for k in range(half):
-            r3 = np.random.rand()
-            si[k, :] = r3 * sea_horses_father[k, :] + (1 - r3) * sea_horses_mother[k, :]
+        r3 = np.random.rand(half, 1)
+        si = r3 * sea_horses_father + (1 - r3) * sea_horses_mother[:half, :]
 
         sea_horses_offspring = np.clip(si, lb_vec, ub_vec)
         sea_horses_fitness2 = np.array([fobj(ind) for ind in sea_horses_offspring], dtype=float)

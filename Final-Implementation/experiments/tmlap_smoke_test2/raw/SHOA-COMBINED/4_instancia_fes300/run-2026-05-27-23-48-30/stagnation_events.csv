@@ -1,7 +1,0 @@
-run_id,timestamp,function_name,dimension,iteration,event,fe,sfes,min_sfes,last_improvement_fe,warmup_active,warmup_fes,restart_attempted,restart_executed,restart_blocked_by_cooldown,restart_source,restart_feature,restart_feature_score,restart_count,restart_cooldown_fes,restart_cooldown_remaining_fes,lime_triggered,lime_trigger_source,run_number
-run-2026-05-27-23-48-30,2026-05-27T23:48:30Z,4.instancia.txt,226,1,stagnation_start,75,45,12,30,0,15,0,0,0,none,,0.0,0,12,0,0,none,1
-run-2026-05-27-23-48-30,2026-05-27T23:48:30Z,4.instancia.txt,226,1,warmup_completed,75,45,12,30,0,15,0,0,0,none,,0.0,0,12,0,0,none,1
-run-2026-05-27-23-48-30,2026-05-27T23:48:30Z,4.instancia.txt,226,1,restart_executed,78,45,12,30,0,15,1,1,0,random_fallback,,0.0,3,12,12,0,none,1
-run-2026-05-27-23-48-30,2026-05-27T23:48:30Z,4.instancia.txt,226,2,recovered,123,0,12,123,0,15,0,0,0,none,,0.0,0,12,0,0,none,1
-run-2026-05-27-23-48-30,2026-05-27T23:48:30Z,4.instancia.txt,226,3,stagnation_start,168,45,12,123,0,15,0,0,0,none,,0.0,0,12,0,0,none,1
-run-2026-05-27-23-48-30,2026-05-27T23:48:30Z,4.instancia.txt,226,3,restart_executed,171,45,12,123,0,15,1,1,0,random_fallback,,0.0,3,12,12,0,none,1

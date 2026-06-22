@@ -1,7 +1,0 @@
-run_id,timestamp,function_name,dimension,iteration,fe,best_fitness,last_improvement_fe,sfes,min_sfes,stagnated,improved,event,run_number
-run-2026-05-27-23-48-04,2026-05-27T23:48:04Z,1.instancia_simple.txt,6,1,75,89.0,30,45,12,1,0,stagnation_start,1
-run-2026-05-27-23-48-04,2026-05-27T23:48:04Z,1.instancia_simple.txt,6,2,123,89.0,30,93,12,1,0,none,1
-run-2026-05-27-23-48-04,2026-05-27T23:48:04Z,1.instancia_simple.txt,6,3,168,89.0,30,138,12,1,0,none,1
-run-2026-05-27-23-48-04,2026-05-27T23:48:04Z,1.instancia_simple.txt,6,4,213,89.0,30,183,12,1,0,none,1
-run-2026-05-27-23-48-04,2026-05-27T23:48:04Z,1.instancia_simple.txt,6,5,258,89.0,30,228,12,1,0,none,1
-run-2026-05-27-23-48-04,2026-05-27T23:48:04Z,1.instancia_simple.txt,6,6,303,89.0,30,273,12,1,0,none,1

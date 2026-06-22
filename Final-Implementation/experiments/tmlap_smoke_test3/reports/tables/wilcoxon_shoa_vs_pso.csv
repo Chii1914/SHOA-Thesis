@@ -1,2 +1,0 @@
-instance_name,max_fes_budget,n_pairs,SHOA_mean_fitness,PSO_mean_fitness,wilcoxon_statistic,p_value,alpha,outcome_SHOA_vs_PSO
-1.instancia_simple.txt,300,1,89.0,89.0,0.0,1.0,0.05,≈

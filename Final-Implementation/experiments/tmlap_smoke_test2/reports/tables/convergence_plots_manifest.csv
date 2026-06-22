@@ -1,6 +1,0 @@
-plot_type,instance_name,max_fes_budget,path
-convergence,1.instancia_simple.txt,300,C:\Users\amsmaguirre\Desktop\SHOA-Thesis\Final-Implementation\experiments\tmlap_smoke_test2\reports\plots\convergence_1.instancia_simple_fes300.png
-convergence,2.instancia_mediana.txt,300,C:\Users\amsmaguirre\Desktop\SHOA-Thesis\Final-Implementation\experiments\tmlap_smoke_test2\reports\plots\convergence_2.instancia_mediana_fes300.png
-convergence,3.instancia_dura.txt,300,C:\Users\amsmaguirre\Desktop\SHOA-Thesis\Final-Implementation\experiments\tmlap_smoke_test2\reports\plots\convergence_3.instancia_dura_fes300.png
-convergence,4.instancia.txt,300,C:\Users\amsmaguirre\Desktop\SHOA-Thesis\Final-Implementation\experiments\tmlap_smoke_test2\reports\plots\convergence_4.instancia_fes300.png
-convergence,4.instancia.txt,500,C:\Users\amsmaguirre\Desktop\SHOA-Thesis\Final-Implementation\experiments\tmlap_smoke_test2\reports\plots\convergence_4.instancia_fes500.png

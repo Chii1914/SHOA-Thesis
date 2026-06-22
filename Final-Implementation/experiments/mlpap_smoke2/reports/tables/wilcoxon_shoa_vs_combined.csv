@@ -1,4 +1,0 @@
-instance_name,scale,max_fes_budget,n_pairs,SHOA_mean_fitness,SHOA-COMBINED_mean_fitness,wilcoxon_statistic,p_value,alpha,outcome_SHOA_vs_COMBINED
-S01.json,S,1500,2,10247.372738154305,5229.320400977828,0.0,0.5,0.05,≈
-S02.json,S,1500,2,15282.168805808193,10271.039186026443,0.0,0.5,0.05,≈
-M01.json,M,2000,2,60995.6378503068,40372.84667160225,0.0,0.5,0.05,≈

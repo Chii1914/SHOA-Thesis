@@ -1,2 +1,0 @@
-run_id,timestamp,function_name,instance_name,run_number,seed,dimension,hubs,pop,max_iter,best_fitness,base_cost,feasible_best_solution,overflow_total,distance_violation,fes_used,elapsed_seconds
-run-2026-05-27-23-48-14,2026-05-27T23:48:14Z,3.instancia_dura.txt,3.instancia_dura.txt,1,4822,24,8,30,6,315.0,315.0,1,0,0.0,300,0.1838743998669088

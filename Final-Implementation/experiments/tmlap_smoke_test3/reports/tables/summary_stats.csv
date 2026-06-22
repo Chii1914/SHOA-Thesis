@@ -1,4 +1,0 @@
-algorithm,instance_name,max_fes_budget,runs_completed,best,mean,std,median,worst,feasibility_rate,mean_pm_std
-PSO,1.instancia_simple.txt,300,1,89.0,89.0,0.0,89.0,89.0,1.0,8.900000e+01 +/- 0.000000e+00
-SHOA,1.instancia_simple.txt,300,1,89.0,89.0,0.0,89.0,89.0,1.0,8.900000e+01 +/- 0.000000e+00
-SHOA-COMBINED,1.instancia_simple.txt,300,1,89.0,89.0,0.0,89.0,89.0,1.0,8.900000e+01 +/- 0.000000e+00

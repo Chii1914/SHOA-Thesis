@@ -1,3 +1,0 @@
-instance_name,scale,max_fes_budget,n_pairs,SHOA_mean_fitness,PSO_mean_fitness,wilcoxon_statistic,p_value,alpha,outcome_SHOA_vs_PSO
-S01.json,S,1500,2,10246.138838343208,10230.47932499068,0.0,0.5,0.05,≈
-S02.json,S,1500,2,10271.94591896582,10261.18760471091,1.0,1.0,0.05,≈
