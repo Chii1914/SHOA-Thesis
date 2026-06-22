@@ -524,34 +524,41 @@ def build_comparison_table(
 
 
 # ---------------------------------------------------------------------------
-# Ranking
+# Ranking (generic pairwise)
 # ---------------------------------------------------------------------------
 
-def rank_shoa_vs_combined(grouped: dict) -> tuple[list[dict], list[dict]]:
+def rank_pairwise(
+    algo_a: str,
+    algo_b: str,
+    grouped: dict,
+) -> tuple[list[dict], list[dict]]:
+    """Pairwise ranking: algo_a vs algo_b (rank 1 = better mean fitness)."""
+    col_a = algo_a.replace("-", "_")
+    col_b = algo_b.replace("-", "_")
     instance_budgets = sorted({(inst, fes) for (_, inst, fes) in grouped})
     rank_acc: dict[tuple[str, int, str], list[float]] = {}
     ranking: list[dict] = []
 
     for inst, fes in instance_budgets:
-        shoa_items = grouped.get(("SHOA",          inst, fes), [])
-        comb_items = grouped.get(("SHOA-COMBINED", inst, fes), [])
-        if not shoa_items or not comb_items:
+        items_a = grouped.get((algo_a, inst, fes), [])
+        items_b = grouped.get((algo_b, inst, fes), [])
+        if not items_a or not items_b:
             continue
-        sm = float(np.mean([r["best_fitness"] for r in shoa_items]))
-        cm = float(np.mean([r["best_fitness"] for r in comb_items]))
-        if abs(sm - cm) <= 1e-15:
-            sr, cr = 1.5, 1.5
-        elif sm < cm:
-            sr, cr = 1.0, 2.0
+        ma = float(np.mean([r["best_fitness"] for r in items_a]))
+        mb = float(np.mean([r["best_fitness"] for r in items_b]))
+        if abs(ma - mb) <= 1e-15:
+            ra, rb = 1.5, 1.5
+        elif ma < mb:
+            ra, rb = 1.0, 2.0
         else:
-            sr, cr = 2.0, 1.0
+            ra, rb = 2.0, 1.0
         ranking.append({
             "instance_name": inst, "scale": _instance_scale(inst), "max_fes_budget": fes,
-            "SHOA_mean": sm, "SHOA-COMBINED_mean": cm,
-            "SHOA_rank": sr, "SHOA-COMBINED_rank": cr,
+            f"{col_a}_mean": ma, f"{col_b}_mean": mb,
+            f"{col_a}_rank": ra, f"{col_b}_rank": rb,
         })
-        rank_acc.setdefault(("all", fes, "SHOA"),          []).append(sr)
-        rank_acc.setdefault(("all", fes, "SHOA-COMBINED"), []).append(cr)
+        rank_acc.setdefault(("all", fes, algo_a), []).append(ra)
+        rank_acc.setdefault(("all", fes, algo_b), []).append(rb)
 
     avg_rows = [
         {"group": g, "max_fes_budget": fes, "algorithm": algo,
@@ -562,10 +569,23 @@ def rank_shoa_vs_combined(grouped: dict) -> tuple[list[dict], list[dict]]:
 
 
 # ---------------------------------------------------------------------------
-# Wilcoxon
+# Wilcoxon (generic pairwise)
 # ---------------------------------------------------------------------------
 
-def wilcoxon_shoa_vs_combined(grouped: dict, alpha: float = 0.05) -> tuple[list[dict], list[dict]]:
+def wilcoxon_pairwise(
+    algo_a: str,
+    algo_b: str,
+    grouped: dict,
+    alpha: float = 0.05,
+) -> tuple[list[dict], list[dict]]:
+    """Wilcoxon signed-rank test: algo_a vs algo_b (two-sided, per instance).
+
+    outcome column: '+' = algo_a significantly better,
+                    '-' = algo_b significantly better,
+                    '≈' = no significant difference.
+    """
+    col_a = algo_a.replace("-", "_")
+    col_b = algo_b.replace("-", "_")
     rows, summary = [], []
     instance_budgets = sorted({(inst, fes) for (_, inst, fes) in grouped})
     budgets = sorted({fes for (_, fes) in instance_budgets})
@@ -575,20 +595,20 @@ def wilcoxon_shoa_vs_combined(grouped: dict, alpha: float = 0.05) -> tuple[list[
         for inst, fes in instance_budgets:
             if fes != budget:
                 continue
-            shoa = grouped.get(("SHOA",          inst, budget), [])
-            comb = grouped.get(("SHOA-COMBINED", inst, budget), [])
-            if not shoa or not comb:
+            items_a = grouped.get((algo_a, inst, budget), [])
+            items_b = grouped.get((algo_b, inst, budget), [])
+            if not items_a or not items_b:
                 continue
 
-            sb = {_to_int(r["run_number"]): float(r["best_fitness"]) for r in shoa}
-            cb = {_to_int(r["run_number"]): float(r["best_fitness"]) for r in comb}
-            common = sorted(set(sb) & set(cb))
+            da = {_to_int(r["run_number"]): float(r["best_fitness"]) for r in items_a}
+            db = {_to_int(r["run_number"]): float(r["best_fitness"]) for r in items_b}
+            common = sorted(set(da) & set(db))
             if common:
-                x = np.array([sb[k] for k in common], dtype=float)
-                y = np.array([cb[k] for k in common], dtype=float)
+                x = np.array([da[k] for k in common], dtype=float)
+                y = np.array([db[k] for k in common], dtype=float)
             else:
-                x = np.array(sorted(float(r["best_fitness"]) for r in shoa), dtype=float)
-                y = np.array(sorted(float(r["best_fitness"]) for r in comb), dtype=float)
+                x = np.array(sorted(float(r["best_fitness"]) for r in items_a), dtype=float)
+                y = np.array(sorted(float(r["best_fitness"]) for r in items_b), dtype=float)
                 n = min(x.size, y.size); x, y = x[:n], y[:n]
 
             p_val = stat_val = 1.0
@@ -602,11 +622,11 @@ def wilcoxon_shoa_vs_combined(grouped: dict, alpha: float = 0.05) -> tuple[list[
             except ValueError:
                 pass
 
-            sm, cm = float(np.mean(x)), float(np.mean(y))
+            ma, mb = float(np.mean(x)), float(np.mean(y))
             if p_val < alpha:
-                if sm < cm:
+                if ma < mb:
                     outcome = "+"; wins += 1
-                elif sm > cm:
+                elif ma > mb:
                     outcome = "-"; losses += 1
                 else:
                     outcome = "≈"; ties += 1
@@ -616,13 +636,14 @@ def wilcoxon_shoa_vs_combined(grouped: dict, alpha: float = 0.05) -> tuple[list[
             rows.append({
                 "instance_name": inst, "scale": _instance_scale(inst),
                 "max_fes_budget": budget, "n_pairs": int(min(x.size, y.size)),
-                "SHOA_mean_fitness": sm, "SHOA-COMBINED_mean_fitness": cm,
+                f"{col_a}_mean_fitness": ma, f"{col_b}_mean_fitness": mb,
                 "wilcoxon_statistic": stat_val, "p_value": p_val,
-                "alpha": alpha, "outcome_SHOA_vs_COMBINED": outcome,
+                "alpha": alpha, f"outcome_{col_a}_vs_{col_b}": outcome,
             })
 
         summary.append({
-            "max_fes_budget": budget, "opponent": "SHOA-COMBINED",
+            "comparison": f"{algo_a} vs {algo_b}",
+            "max_fes_budget": budget,
             "wins_plus": wins, "ties_equal": ties, "losses_minus": losses,
         })
     return rows, summary
@@ -1102,16 +1123,25 @@ def main() -> None:
     comparison = build_comparison_table(summary_rows, all_instances, all_algorithms)
     write_csv(tables_dir / "comparison_table_mean_std.csv", comparison)
 
-    # ---- Ranking ----
-    ranking_rows, ranking_avg = rank_shoa_vs_combined(grouped)
-    write_csv(tables_dir / "ranking_shoa_vs_combined_by_instance.csv", ranking_rows)
-    write_csv(tables_dir / "ranking_shoa_vs_combined_average.csv", ranking_avg)
+    # ---- Ranking (all 3 pairings) ----
+    _pairs = [
+        ("SHOA", "SHOA-COMBINED"),
+        ("SHOA", "PSO"),
+        ("SHOA-COMBINED", "PSO"),
+    ]
+    all_wtl_rows: list[dict] = []
+    for algo_a, algo_b in _pairs:
+        tag = f"{algo_a.lower().replace('-','_')}_vs_{algo_b.lower().replace('-','_')}"
+        r_by_inst, r_avg = rank_pairwise(algo_a, algo_b, grouped)
+        write_csv(tables_dir / f"ranking_{tag}_by_instance.csv", r_by_inst)
+        write_csv(tables_dir / f"ranking_{tag}_average.csv", r_avg)
 
-    # ---- Wilcoxon ----
-    wilcoxon_rows, wil_summary = wilcoxon_shoa_vs_combined(grouped)
-    write_csv(tables_dir / "wilcoxon_shoa_vs_combined.csv", wilcoxon_rows)
-    write_csv(tables_dir / "wins_ties_losses.csv", wil_summary)
-    logger.info("Written statistical tables")
+        w_rows, w_summary = wilcoxon_pairwise(algo_a, algo_b, grouped)
+        write_csv(tables_dir / f"wilcoxon_{tag}.csv", w_rows)
+        all_wtl_rows.extend(w_summary)
+
+    write_csv(tables_dir / "wins_ties_losses.csv", all_wtl_rows)
+    logger.info("Written statistical tables (3 pairwise comparisons)")
 
     # ---- Convergence plots ----
     conv_manifest = plot_convergence_curves(
@@ -1151,15 +1181,16 @@ def main() -> None:
     # ---- Statistical notes ----
     notes = [
         "Statistical protocol notes (MLPAP):",
-        "- Algorithms: SHOA (Sea-Horse Optimizer) and SHOA-COMBINED (SHOA + LIME + stagnation detection).",
+        "- Algorithms: SHOA, SHOA-COMBINED (SHOA + LIME + stagnation detection), PSO.",
         "- Execution order: S → M → L first, then XL, then 2XL.",
         "- Metric: best_fitness (penalized objective, lower is better).",
         "- base_cost: raw objective without penalty (reported separately).",
         "- feasibility_rate: fraction of runs with v(z) == 0.",
-        "- Wilcoxon signed-rank: two-sided, alpha=0.05, SHOA vs SHOA-COMBINED.",
-        "- '+' = SHOA significantly better than SHOA-COMBINED.",
-        "- '-' = SHOA-COMBINED significantly better than SHOA.",
-        "- '≈' = no significant difference.",
+        "- Wilcoxon signed-rank: two-sided, alpha=0.05, all 3 pairwise comparisons:",
+        "    SHOA vs SHOA-COMBINED | SHOA vs PSO | SHOA-COMBINED vs PSO",
+        "- In each comparison: '+' = algo_a significantly better (lower fitness),",
+        "  '-' = algo_b significantly better, '≈' = no significant difference.",
+        "- Ranking: 1 = better mean fitness, 1.5 = tie, 2 = worse.",
         "- LIME contribution plots generated only for SHOA-COMBINED runs.",
         f"- Instances: {len(instances)} total across scales S/M/L/XL/2XL.",
         f"- MaxFES by scale: {fes_by_scale}",
