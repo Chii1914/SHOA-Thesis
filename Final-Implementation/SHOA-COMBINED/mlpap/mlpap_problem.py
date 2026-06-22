@@ -36,6 +36,17 @@ from pathlib import Path
 
 import numpy as np
 
+# Numba JIT for decode inner loop — graceful fallback when not installed
+try:
+    from numba import njit as _njit
+    _USE_NUMBA = True
+except ImportError:
+    def _njit(**kwargs):  # type: ignore[misc]
+        def decorator(fn):
+            return fn
+        return decorator
+    _USE_NUMBA = False
+
 
 # ---------------------------------------------------------------------------
 # Data container
@@ -112,6 +123,73 @@ def load_mlpap_instance(path: str | Path) -> MLPAPData:
 
 
 # ---------------------------------------------------------------------------
+# JIT-compiled decode kernel
+# ---------------------------------------------------------------------------
+
+@_njit(cache=True)
+def _decode_jit(
+    preferred: np.ndarray,     # int64[n]   preferred hub index per client
+    n_hubs: np.int64,          # scalar
+    fhubs_arr: np.ndarray,     # int64[n, max_fhubs]  -1-padded feasible hubs
+    fhubs_len: np.ndarray,     # int64[n]             valid count per client
+    client_order: np.ndarray,  # int64[n]             assignment order
+    demand: np.ndarray,        # float64[n]
+    capacity: np.ndarray,      # float64[m]
+    distances: np.ndarray,     # float64[n, m]
+) -> tuple[np.ndarray, np.ndarray]:
+    """Greedy demand-aware hub assignment — same semantics as the Python decode().
+
+    Hub selection priority (lexicographic, same as hub_key sort):
+        1. Prefer hubs with capacity headroom (has_room=1 before has_room=0)
+        2. Among equal, prefer hub index closest to preferred (abs(j - pref))
+        3. Among equal, prefer hub with shorter actual walking distance
+    First-encountered wins on full tie (stable, matching Python Timsort).
+    """
+    n = client_order.shape[0]
+    load = np.zeros(n_hubs, dtype=np.float64)
+    assignment = np.empty(n, dtype=np.int64)
+
+    for k in range(n):
+        i = client_order[k]
+        q_i = demand[i]
+        pref = preferred[i]
+        n_feas = fhubs_len[i]
+
+        if n_feas > 0:
+            best_j    = fhubs_arr[i, 0]
+            best_hr   = np.int64(1) if load[best_j] + q_i <= capacity[best_j] else np.int64(0)
+            best_diff = abs(best_j - pref)
+            best_dist = distances[i, best_j]
+
+            for idx in range(1, n_feas):
+                j    = fhubs_arr[i, idx]
+                hr   = np.int64(1) if load[j] + q_i <= capacity[j] else np.int64(0)
+                diff = abs(j - pref)
+                dist = distances[i, j]
+                # Lexicographic comparison: (-hr, diff, dist)
+                if (hr > best_hr
+                        or (hr == best_hr and diff < best_diff)
+                        or (hr == best_hr and diff == best_diff and dist < best_dist)):
+                    best_j, best_hr, best_diff, best_dist = j, hr, diff, dist
+
+            chosen = best_j
+
+        else:
+            # No feasible hub within D_max: assign to globally nearest (incurs v3 penalty)
+            chosen = np.int64(0)
+            mn = distances[i, 0]
+            for jj in range(1, n_hubs):
+                if distances[i, jj] < mn:
+                    mn = distances[i, jj]
+                    chosen = np.int64(jj)
+
+        assignment[i] = chosen
+        load[chosen] += q_i
+
+    return load, assignment
+
+
+# ---------------------------------------------------------------------------
 # Objective
 # ---------------------------------------------------------------------------
 
@@ -131,11 +209,11 @@ class MLPAPObjective:
         self.instance_path = Path(instance_path)
         self.data = load_mlpap_instance(self.instance_path)
         self.dimension = int(self.data.n_clients)
-        # Use instance penalty unless caller overrides
         self.penalty_scale = float(penalty_scale) if penalty_scale is not None else self.data.penalty
         self.nfev = 0
 
         d = self.data
+
         # Precompute feasible hub lists per client (hubs within D_max)
         self._feasible_hubs: list[list[int]] = [
             [j for j in range(d.n_hubs) if d.distances[i, j] <= d.d_max]
@@ -147,6 +225,23 @@ class MLPAPObjective:
             key=lambda i: (len(self._feasible_hubs[i]), i),
         )
 
+        # --- Numba-compatible precomputed arrays ---
+        _mf = max((len(fh) for fh in self._feasible_hubs), default=1)
+        self._fhubs_arr = np.full((d.n_clients, _mf), -1, dtype=np.int64)
+        self._fhubs_len = np.zeros(d.n_clients, dtype=np.int64)
+        for _i, _fh in enumerate(self._feasible_hubs):
+            _k = len(_fh)
+            if _k:
+                self._fhubs_arr[_i, :_k] = _fh
+            self._fhubs_len[_i] = _k
+        self._client_order_arr = np.array(self._client_order, dtype=np.int64)
+        # Precomputed index range for vectorised evaluate_assignment
+        self._arange_n = np.arange(d.n_clients, dtype=np.int64)
+        # Ensure distances are C-contiguous float64 for numba
+        self._distances_f64 = np.ascontiguousarray(d.distances, dtype=np.float64)
+        self._capacity_f64  = np.ascontiguousarray(d.capacity,  dtype=np.float64)
+        self._demand_f64    = np.ascontiguousarray(d.demand,    dtype=np.float64)
+
     # ------------------------------------------------------------------
     # Public interface
     # ------------------------------------------------------------------
@@ -155,45 +250,26 @@ class MLPAPObjective:
         return 0.0, 1.0
 
     def decode(self, vector: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
-        """Map continuous [0,1]^n vector to (y[m], assignment[n]).
-
-        Returns
-        -------
-        y          : int array [m], 1 if hub j is active
-        assignment : int array [n], hub index assigned to each client
-        """
+        """Map continuous [0,1]^n vector to (y[m], assignment[n])."""
         d = self.data
         x = np.clip(np.asarray(vector, dtype=float).reshape(-1), 0.0, 1.0)
         if x.size != self.dimension:
             raise ValueError(f"Vector size {x.size} != dimension {self.dimension}")
 
-        preferred = np.clip(np.floor(x * d.n_hubs).astype(int), 0, d.n_hubs - 1)
+        preferred = np.clip(
+            np.floor(x * d.n_hubs).astype(np.int64), 0, d.n_hubs - 1
+        )
 
-        # Demand load per hub (accumulated during assignment)
-        load = np.zeros(d.n_hubs, dtype=float)
-        assignment = np.full(d.n_clients, -1, dtype=int)
-
-        for i in self._client_order:
-            q_i = d.demand[i]
-            pref = int(preferred[i])
-            feasible = self._feasible_hubs[i]
-
-            chosen = -1
-            if feasible:
-                # Sort feasible hubs: prefer those closest to pref with capacity headroom
-                def hub_key(j: int) -> tuple:
-                    has_room = int(load[j] + q_i <= d.capacity[j])
-                    return (-has_room, abs(j - pref), d.distances[i, j])
-
-                for j in sorted(feasible, key=hub_key):
-                    chosen = j
-                    break  # take the best-ranked hub (may or may not have room)
-            else:
-                # No feasible hub: nearest globally (distance violation will be penalized)
-                chosen = int(np.argmin(d.distances[i]))
-
-            assignment[i] = chosen
-            load[chosen] += q_i
+        load, assignment = _decode_jit(
+            preferred,
+            np.int64(d.n_hubs),
+            self._fhubs_arr,
+            self._fhubs_len,
+            self._client_order_arr,
+            self._demand_f64,
+            self._capacity_f64,
+            self._distances_f64,
+        )
 
         y = (load > 0.0).astype(int)
         return y, assignment
@@ -213,52 +289,33 @@ class MLPAPObjective:
         violation     : total constraint violation v(z)
         """
         d = self.data
-        y = np.asarray(y, dtype=int).reshape(-1)
-        asgn = np.asarray(assignment, dtype=int).reshape(-1)
+        y    = np.asarray(y,          dtype=int).reshape(-1)
+        asgn = np.asarray(assignment, dtype=np.int64).reshape(-1)
 
-        # --- compute demand load per hub ---
-        load = np.zeros(d.n_hubs, dtype=float)
-        for i, j in enumerate(asgn):
-            if 0 <= j < d.n_hubs:
-                load[j] += d.demand[i]
+        # Demand load per hub — scatter-add via np.bincount (replaces Python loop)
+        load = np.bincount(asgn, weights=self._demand_f64, minlength=d.n_hubs)
 
-        # --- facility cost ---
-        # fixed opening cost
-        fixed_cost = float(np.dot(d.fixed_costs, y))
-        # operational cost: o_j * (demand served by hub j)
-        op_cost = float(np.dot(d.op_costs, load * y))
+        # Facility cost
+        fixed_cost    = float(np.dot(d.fixed_costs, y))
+        op_cost       = float(np.dot(d.op_costs, load * y))
         facility_cost = fixed_cost + op_cost
 
-        # --- weighted assignment cost ---
-        assign_cost = 0.0
-        for i, j in enumerate(asgn):
-            if 0 <= j < d.n_hubs:
-                assign_cost += d.priority[i] * d.distances[i, j]
+        # Weighted assignment cost + per-client assigned distance (vectorised)
+        asgn_dist   = self._distances_f64[self._arange_n, asgn]   # shape [n]
+        assign_cost = float(np.dot(d.priority, asgn_dist))
+        base_cost   = facility_cost + assign_cost
 
-        base_cost = facility_cost + assign_cost
-
-        # --- violations ---
-        # v1: upper capacity  (demand-units overflow)
-        v1 = float(np.sum(np.maximum(0.0, load - d.capacity * y)))
-        # v2: min utilization (demand-units under-use for active hubs)
-        v2 = float(np.sum(np.maximum(0.0, d.min_util * y - load)))
-        # v3: walking-distance violation
-        v3 = 0.0
-        for i, j in enumerate(asgn):
-            if 0 <= j < d.n_hubs:
-                excess = d.distances[i, j] - d.d_max
-                if excess > 0:
-                    v3 += excess
-        # v4/v5: hub budget
-        n_active = int(np.sum(y))
-        v4 = float(max(0, d.p_min - n_active))
-        v5 = float(max(0, n_active - d.p_max))
+        # Violations
+        v1  = float(np.sum(np.maximum(0.0, load - d.capacity * y)))
+        v2  = float(np.sum(np.maximum(0.0, d.min_util * y - load)))
+        v3  = float(np.sum(np.maximum(0.0, asgn_dist - d.d_max)))
+        n_a = int(np.sum(y))
+        v4  = float(max(0, d.p_min - n_a))
+        v5  = float(max(0, n_a - d.p_max))
 
         violation = v1 + v2 + v3 + v4 + v5
-        fitness = base_cost + self.penalty_scale * violation
-        feasible = violation == 0.0
-
-        return float(fitness), feasible, float(base_cost), float(violation)
+        fitness   = base_cost + self.penalty_scale * violation
+        return float(fitness), (violation == 0.0), float(base_cost), float(violation)
 
     def __call__(self, vector: np.ndarray) -> float:
         self.nfev += 1

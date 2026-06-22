@@ -47,42 +47,30 @@ def SHO(pop: int, Max_iter: int, LB, UB, Dim: int, fobj):
         beta = np.random.randn(pop, Dim)
         elite = np.tile(target_position, (pop, 1))
 
-        # Motor behavior
+        # Motor behavior (vectorised — pre-generates random matrices for both branches)
         r1 = np.random.randn(pop)
         step_length = levy(pop, Dim, 1.5)
-        sea_horses_new1 = np.zeros_like(sea_horses)
-
-        for i in range(pop):
-            for j in range(Dim):
-                if r1[i] > 0:
-                    r = np.random.rand()
-                    theta = r * 2 * np.pi
-                    row = u * np.exp(theta * v)
-                    x = row * np.cos(theta)
-                    y = row * np.sin(theta)
-                    z = row * theta
-                    sea_horses_new1[i, j] = sea_horses[i, j] + step_length[i, j] * (
-                        (elite[i, j] - sea_horses[i, j]) * x * y * z + elite[i, j]
-                    )
-                else:
-                    sea_horses_new1[i, j] = sea_horses[i, j] + np.random.rand() * l * beta[i, j] * (
-                        sea_horses[i, j] - beta[i, j] * elite[i, j]
-                    )
-
+        rand_theta = np.random.rand(pop, Dim)
+        theta      = rand_theta * (2.0 * np.pi)
+        row        = u * np.exp(theta * v)
+        levy_branch  = sea_horses + step_length * (
+            (elite - sea_horses) * row * np.cos(theta) * np.sin(theta) * theta + elite
+        )
+        rand_brown = np.random.rand(pop, Dim)
+        brown_branch = sea_horses + rand_brown * l * beta * (
+            sea_horses - beta * elite
+        )
+        sea_horses_new1 = np.where(r1[:, None] > 0, levy_branch, brown_branch)
         sea_horses_new1 = np.clip(sea_horses_new1, lb_vec, ub_vec)
 
-        # Predation behavior
-        sea_horses_new2 = np.zeros_like(sea_horses)
-        r2 = np.random.rand(pop)
+        # Predation behavior (vectorised)
+        r2    = np.random.rand(pop)
         alpha = (1 - t / Max_iter) ** (2 * t / Max_iter)
-
-        for i in range(pop):
-            for j in range(Dim):
-                if r2[i] >= 0.1:
-                    sea_horses_new2[i, j] = alpha * (elite[i, j] - np.random.rand() * sea_horses_new1[i, j]) + (1 - alpha) * elite[i, j]
-                else:
-                    sea_horses_new2[i, j] = (1 - alpha) * (sea_horses_new1[i, j] - np.random.rand() * elite[i, j]) + alpha * sea_horses_new1[i, j]
-
+        rA    = np.random.rand(pop, Dim)
+        rB    = np.random.rand(pop, Dim)
+        brA   = alpha * (elite - rA * sea_horses_new1) + (1 - alpha) * elite
+        brB   = (1 - alpha) * (sea_horses_new1 - rB * elite) + alpha * sea_horses_new1
+        sea_horses_new2 = np.where(r2[:, None] >= 0.1, brA, brB)
         sea_horses_new2 = np.clip(sea_horses_new2, lb_vec, ub_vec)
         sea_horses_fitness1 = np.array([fobj(ind) for ind in sea_horses_new2], dtype=float)
 
@@ -92,10 +80,8 @@ def SHO(pop: int, Max_iter: int, LB, UB, Dim: int, fobj):
         sea_horses_father = sea_horses_new2[index[:half], :]
         sea_horses_mother = sea_horses_new2[index[half:pop], :]
 
-        si = np.zeros((half, Dim), dtype=float)
-        for k in range(half):
-            r3 = np.random.rand()
-            si[k, :] = r3 * sea_horses_father[k, :] + (1 - r3) * sea_horses_mother[k, :]
+        r3 = np.random.rand(half, 1)
+        si = r3 * sea_horses_father + (1 - r3) * sea_horses_mother
 
         sea_horses_offspring = np.clip(si, lb_vec, ub_vec)
         sea_horses_fitness2 = np.array([fobj(ind) for ind in sea_horses_offspring], dtype=float)
