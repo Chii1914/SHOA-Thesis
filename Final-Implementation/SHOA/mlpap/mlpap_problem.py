@@ -34,18 +34,24 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 
+import logging as _logging
+
 import numpy as np
+
+_log = _logging.getLogger(__name__)
 
 # Numba JIT for decode inner loop — graceful fallback when not installed
 try:
     from numba import njit as _njit
     _USE_NUMBA = True
+    _log.info("Numba JIT disponible — _decode_jit compilado con cache=True")
 except ImportError:
     def _njit(**kwargs):  # type: ignore[misc]
         def decorator(fn):
             return fn
         return decorator
     _USE_NUMBA = False
+    _log.warning("Numba no instalado — _decode_jit corre en Python puro (más lento)")
 
 
 # ---------------------------------------------------------------------------
