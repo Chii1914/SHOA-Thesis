@@ -177,6 +177,7 @@ def SHO_HYBRID(
     log_callback: Callable[[str], None] | None = None,
     progress_every: int = 1,
     verbose: bool = True,
+    batch_eval=None,
 ) -> dict:
     if min_samples_before_lime is None:
         min_samples_before_lime = max(pop * 2, 30)
@@ -218,10 +219,17 @@ def SHO_HYBRID(
     convergence_curve = np.zeros(max_iter, dtype=float)
     trajectories = np.zeros((pop, max_iter), dtype=float)
 
-    for i in range(pop):
-        sea_horses_fitness[i] = fobj(sea_horses[i, :])
-        fitness_history[i, 0] = sea_horses_fitness[i]
-        population_history[i, :, 0] = sea_horses[i, :]
+    if batch_eval is not None:
+        sea_horses_fitness = batch_eval(sea_horses)
+        fobj.nfev = getattr(fobj, "nfev", 0) + pop
+        for i in range(pop):
+            fitness_history[i, 0] = sea_horses_fitness[i]
+            population_history[i, :, 0] = sea_horses[i, :]
+    else:
+        for i in range(pop):
+            sea_horses_fitness[i] = fobj(sea_horses[i, :])
+            fitness_history[i, 0] = sea_horses_fitness[i]
+            population_history[i, :, 0] = sea_horses[i, :]
     trajectories[:, 0] = sea_horses[:, 0]
 
     sorted_indexes = np.argsort(sea_horses_fitness)
@@ -380,7 +388,11 @@ def SHO_HYBRID(
         mag_predacion_stats[:, 0] = np.mean(stoch_abs, axis=1)
         mag_predacion_stats[:, 1] = np.max( stoch_abs, axis=1)
         mag_predacion_stats[:, 2] = np.std( stoch_abs, axis=1)
-        sea_horses_fitness1 = np.array([fobj(ind) for ind in sea_horses_new2], dtype=float)
+        if batch_eval is not None:
+            sea_horses_fitness1 = batch_eval(sea_horses_new2)
+            fobj.nfev = getattr(fobj, "nfev", 0) + pop
+        else:
+            sea_horses_fitness1 = np.array([fobj(ind) for ind in sea_horses_new2], dtype=float)
 
         distance_to_elite = np.linalg.norm(previous_population - elite, axis=1)
         delta_position_norm = np.linalg.norm(sea_horses_new2 - previous_population, axis=1)
@@ -439,7 +451,11 @@ def SHO_HYBRID(
         si = r3 * sea_horses_father + (1 - r3) * sea_horses_mother[:half, :]
 
         sea_horses_offspring = np.clip(si, lb_vec, ub_vec)
-        sea_horses_fitness2 = np.array([fobj(ind) for ind in sea_horses_offspring], dtype=float)
+        if batch_eval is not None:
+            sea_horses_fitness2 = batch_eval(sea_horses_offspring)
+            fobj.nfev = getattr(fobj, "nfev", 0) + half
+        else:
+            sea_horses_fitness2 = np.array([fobj(ind) for ind in sea_horses_offspring], dtype=float)
 
         # Selection
         sea_horses_fitness_all = np.concatenate([sea_horses_fitness1, sea_horses_fitness2])

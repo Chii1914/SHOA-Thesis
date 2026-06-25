@@ -11,6 +11,7 @@ import numpy as np
 
 from SHO import SHO
 from mlpap_problem import MLPAPObjective, parse_instance_selection
+from parallel_eval import ParallelFobj
 from utils_logging import create_run_directory, summarize_by_function, write_csv, write_json
 
 LOGGER = logging.getLogger("SHOA-MLPAP")
@@ -51,72 +52,74 @@ def main() -> None:
     for instance_path in instance_paths:
         instance_name = instance_path.name
         LOGGER.info("Running %s", instance_name)
+        objective = MLPAPObjective(instance_path)
+        lower_bound, upper_bound = objective.get_bounds()
 
-        for run_number in range(1, args.runs + 1):
-            run_seed = args.seed + run_number + (abs(hash(instance_name)) % 10000)
-            np.random.seed(run_seed)
+        with ParallelFobj(str(instance_path), objective.penalty_scale) as batch:
+            for run_number in range(1, args.runs + 1):
+                run_seed = args.seed + run_number + (abs(hash(instance_name)) % 10000)
+                np.random.seed(run_seed)
+                objective.nfev = 0
 
-            objective = MLPAPObjective(instance_path)
-            lower_bound, upper_bound = objective.get_bounds()
+                start = time.perf_counter()
+                best_fitness, best_position, convergence_curve, _, _, _ = SHO(
+                    args.pop,
+                    args.max_iter,
+                    lower_bound,
+                    upper_bound,
+                    objective.dimension,
+                    objective,
+                    batch_eval=batch,
+                )
+                elapsed = time.perf_counter() - start
 
-            start = time.perf_counter()
-            best_fitness, best_position, convergence_curve, _, _, _ = SHO(
-                args.pop,
-                args.max_iter,
-                lower_bound,
-                upper_bound,
-                objective.dimension,
-                objective,
-            )
-            elapsed = time.perf_counter() - start
+                best_pos = np.asarray(best_position, dtype=float)
+                y, assignment = objective.decode(best_pos)
+                _, feasible_solution, base_cost, violation_total = objective.evaluate_assignment(y, assignment)
 
-            best_pos = np.asarray(best_position, dtype=float)
-            y, assignment = objective.decode(best_pos)
-            _, feasible_solution, base_cost, violation_total = objective.evaluate_assignment(y, assignment)
+                fes_used = int(getattr(objective, "nfev", 0))
 
-            fes_used = int(getattr(objective, "nfev", 0))
-
-            runs_raw_rows.append({
-                "run_id": run_id,
-                "timestamp": ts,
-                "function_name": instance_name,
-                "instance_name": instance_name,
-                "instance_id": objective.data.instance_id,
-                "scale": objective.data.scale,
-                "run_number": run_number,
-                "seed": run_seed,
-                "n_clients": int(objective.data.n_clients),
-                "n_hubs": int(objective.data.n_hubs),
-                "pop": args.pop,
-                "max_iter": args.max_iter,
-                "best_fitness": float(best_fitness),
-                "base_cost": float(base_cost),
-                "feasible_best_solution": int(feasible_solution),
-                "violation_total": float(violation_total),
-                "fes_used": fes_used,
-                "elapsed_seconds": float(elapsed),
-            })
-
-            curve = np.asarray(convergence_curve, dtype=float).reshape(-1)
-            for idx, value in enumerate(curve, start=1):
-                fe_estimate = int(round((idx / max(1, curve.size)) * fes_used))
-                full_output_rows.append({
+                runs_raw_rows.append({
                     "run_id": run_id,
                     "timestamp": ts,
                     "function_name": instance_name,
                     "instance_name": instance_name,
+                    "instance_id": objective.data.instance_id,
+                    "scale": objective.data.scale,
                     "run_number": run_number,
-                    "iteration": idx,
-                    "best_fitness_so_far": float(value),
-                    "fe_estimate": fe_estimate,
+                    "seed": run_seed,
+                    "n_clients": int(objective.data.n_clients),
+                    "n_hubs": int(objective.data.n_hubs),
+                    "pop": args.pop,
+                    "max_iter": args.max_iter,
+                    "best_fitness": float(best_fitness),
+                    "base_cost": float(base_cost),
+                    "feasible_best_solution": int(feasible_solution),
+                    "violation_total": float(violation_total),
+                    "fes_used": fes_used,
+                    "elapsed_seconds": float(elapsed),
                 })
 
-            LOGGER.info(
-                "%s run %d/%d -> best %.6e | feasible=%s | base_cost=%.3f | viol=%.3f | fes=%d | %.2fs",
-                instance_name, run_number, args.runs,
-                float(best_fitness), "yes" if feasible_solution else "no",
-                float(base_cost), float(violation_total), fes_used, elapsed,
-            )
+                curve = np.asarray(convergence_curve, dtype=float).reshape(-1)
+                for idx, value in enumerate(curve, start=1):
+                    fe_estimate = int(round((idx / max(1, curve.size)) * fes_used))
+                    full_output_rows.append({
+                        "run_id": run_id,
+                        "timestamp": ts,
+                        "function_name": instance_name,
+                        "instance_name": instance_name,
+                        "run_number": run_number,
+                        "iteration": idx,
+                        "best_fitness_so_far": float(value),
+                        "fe_estimate": fe_estimate,
+                    })
+
+                LOGGER.info(
+                    "%s run %d/%d -> best %.6e | feasible=%s | base_cost=%.3f | viol=%.3f | fes=%d | %.2fs",
+                    instance_name, run_number, args.runs,
+                    float(best_fitness), "yes" if feasible_solution else "no",
+                    float(base_cost), float(violation_total), fes_used, elapsed,
+                )
 
     summary_rows = summarize_by_function(runs_raw_rows)
 

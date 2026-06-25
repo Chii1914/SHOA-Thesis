@@ -12,6 +12,7 @@ import numpy as np
 from global_explanations import aggregate_global_feature_explanations
 from SHO_HYBRID_Controller import SHO_HYBRID, estimate_max_fes
 from mlpap_problem import MLPAPObjective, parse_instance_selection
+from parallel_eval import ParallelFobj
 from utils_logging import create_run_directory, summarize_by_function, write_csv, write_json
 
 LOGGER = logging.getLogger("SHOA-COMBINED-MLPAP")
@@ -110,104 +111,106 @@ def main() -> None:
     for instance_path in instance_paths:
         instance_name = instance_path.name
         LOGGER.info("Running %s", instance_name)
+        objective = MLPAPObjective(instance_path)
+        lower_bound, upper_bound = objective.get_bounds()
 
-        for run_number in range(1, args.runs + 1):
-            run_seed = args.seed + run_number + (abs(hash(instance_name)) % 10000)
-            np.random.seed(run_seed)
+        with ParallelFobj(str(instance_path), objective.penalty_scale) as batch:
+            for run_number in range(1, args.runs + 1):
+                run_seed = args.seed + run_number + (abs(hash(instance_name)) % 10000)
+                np.random.seed(run_seed)
+                objective.nfev = 0
 
-            objective = MLPAPObjective(instance_path)
-            lower_bound, upper_bound = objective.get_bounds()
+                run_metadata = {
+                    "run_id": run_id,
+                    "timestamp": ts,
+                    "function_name": instance_name,
+                    "dimension": int(objective.dimension),
+                }
 
-            run_metadata = {
-                "run_id": run_id,
-                "timestamp": ts,
-                "function_name": instance_name,
-                "dimension": int(objective.dimension),
-            }
+                start = time.perf_counter()
+                result = SHO_HYBRID(
+                    pop=args.pop,
+                    max_iter=args.max_iter,
+                    lower_bound=lower_bound,
+                    upper_bound=upper_bound,
+                    dim=objective.dimension,
+                    fobj=objective,
+                    batch_eval=batch,
+                    run_metadata=run_metadata,
+                    random_state=run_seed,
+                    min_samples_before_lime=args.lime_min_samples,
+                    lime_selection_mode=effective_selection_mode,
+                    min_sfes_ratio=args.min_sfes_ratio,
+                    max_fes=base_max_fes,
+                    warmup_fes=warmup_fes,
+                    restart_enabled=bool(args.restart_enabled),
+                    restart_percent=args.restart_percent,
+                    restart_cooldown_fes=restart_cooldown_fes,
+                    restart_dominance_threshold=args.restart_dominance_threshold,
+                    enable_lime=bool(args.lime_enabled),
+                    enable_stagnation=True,
+                    progress_every=args.progress_every,
+                    verbose=(not args.quiet),
+                )
+                elapsed = time.perf_counter() - start
 
-            start = time.perf_counter()
-            result = SHO_HYBRID(
-                pop=args.pop,
-                max_iter=args.max_iter,
-                lower_bound=lower_bound,
-                upper_bound=upper_bound,
-                dim=objective.dimension,
-                fobj=objective,
-                run_metadata=run_metadata,
-                random_state=run_seed,
-                min_samples_before_lime=args.lime_min_samples,
-                lime_selection_mode=effective_selection_mode,
-                min_sfes_ratio=args.min_sfes_ratio,
-                max_fes=base_max_fes,
-                warmup_fes=warmup_fes,
-                restart_enabled=bool(args.restart_enabled),
-                restart_percent=args.restart_percent,
-                restart_cooldown_fes=restart_cooldown_fes,
-                restart_dominance_threshold=args.restart_dominance_threshold,
-                enable_lime=bool(args.lime_enabled),
-                enable_stagnation=True,
-                progress_every=args.progress_every,
-                verbose=(not args.quiet),
-            )
-            elapsed = time.perf_counter() - start
+                best_pos = np.asarray(result["best_position"], dtype=float)
+                y, assignment = objective.decode(best_pos)
+                _, feasible_solution, base_cost, violation_total = objective.evaluate_assignment(y, assignment)
 
-            best_pos = np.asarray(result["best_position"], dtype=float)
-            y, assignment = objective.decode(best_pos)
-            _, feasible_solution, base_cost, violation_total = objective.evaluate_assignment(y, assignment)
+                full_rows_run    = result.get("full_output_rows", [])
+                lime_rows_run    = result.get("lime_contribution_rows", [])
+                history_rows_run = result.get("stagnation_history_rows", [])
+                events_rows_run  = result.get("stagnation_event_rows", [])
+                stagnation_meta  = result.get("stagnation_meta", {})
 
-            full_rows_run    = result.get("full_output_rows", [])
-            lime_rows_run    = result.get("lime_contribution_rows", [])
-            history_rows_run = result.get("stagnation_history_rows", [])
-            events_rows_run  = result.get("stagnation_event_rows", [])
-            stagnation_meta  = result.get("stagnation_meta", {})
+                for row in full_rows_run:    row["run_number"] = int(run_number)
+                for row in lime_rows_run:    row["run_number"] = int(run_number)
+                for row in history_rows_run: row["run_number"] = int(run_number)
+                for row in events_rows_run:  row["run_number"] = int(run_number)
 
-            for row in full_rows_run:    row["run_number"] = int(run_number)
-            for row in lime_rows_run:    row["run_number"] = int(run_number)
-            for row in history_rows_run: row["run_number"] = int(run_number)
-            for row in events_rows_run:  row["run_number"] = int(run_number)
+                full_output_rows.extend(full_rows_run)
+                lime_rows_all.extend(lime_rows_run)
+                stagnation_history_rows.extend(history_rows_run)
+                stagnation_event_rows.extend(events_rows_run)
 
-            full_output_rows.extend(full_rows_run)
-            lime_rows_all.extend(lime_rows_run)
-            stagnation_history_rows.extend(history_rows_run)
-            stagnation_event_rows.extend(events_rows_run)
+                run_events_count = sum(
+                    1 for row in events_rows_run
+                    if str(row.get("event", "")) in {"stagnation_start", "recovered"}
+                )
 
-            run_events_count = sum(
-                1 for row in events_rows_run
-                if str(row.get("event", "")) in {"stagnation_start", "recovered"}
-            )
+                runs_raw_rows.append({
+                    "run_id": run_id,
+                    "timestamp": ts,
+                    "function_name": instance_name,
+                    "instance_name": instance_name,
+                    "instance_id": objective.data.instance_id,
+                    "scale": objective.data.scale,
+                    "run_number": run_number,
+                    "dimension": int(objective.dimension),
+                    "n_clients": int(objective.data.n_clients),
+                    "n_hubs": int(objective.data.n_hubs),
+                    "seed": run_seed,
+                    "pop": args.pop,
+                    "max_iter": args.max_iter,
+                    "best_fitness": float(result["best_fitness"]),
+                    "base_cost": float(base_cost),
+                    "feasible_best_solution": int(feasible_solution),
+                    "violation_total": float(violation_total),
+                    "lime_enabled": int(bool(args.lime_enabled)),
+                    "diagnosis_count": int(sum(1 for row in lime_rows_run if int(row.get("diagnosis_id", 0)) > 0)),
+                    "stagnation_events": int(run_events_count),
+                    "final_fe": int(stagnation_meta.get("final_fe", getattr(objective, "nfev", 0))),
+                    "stop_reason": str(stagnation_meta.get("stop_reason", "max_iter")),
+                    "elapsed_seconds": float(elapsed),
+                })
 
-            runs_raw_rows.append({
-                "run_id": run_id,
-                "timestamp": ts,
-                "function_name": instance_name,
-                "instance_name": instance_name,
-                "instance_id": objective.data.instance_id,
-                "scale": objective.data.scale,
-                "run_number": run_number,
-                "dimension": int(objective.dimension),
-                "n_clients": int(objective.data.n_clients),
-                "n_hubs": int(objective.data.n_hubs),
-                "seed": run_seed,
-                "pop": args.pop,
-                "max_iter": args.max_iter,
-                "best_fitness": float(result["best_fitness"]),
-                "base_cost": float(base_cost),
-                "feasible_best_solution": int(feasible_solution),
-                "violation_total": float(violation_total),
-                "lime_enabled": int(bool(args.lime_enabled)),
-                "diagnosis_count": int(sum(1 for row in lime_rows_run if int(row.get("diagnosis_id", 0)) > 0)),
-                "stagnation_events": int(run_events_count),
-                "final_fe": int(stagnation_meta.get("final_fe", getattr(objective, "nfev", 0))),
-                "stop_reason": str(stagnation_meta.get("stop_reason", "max_iter")),
-                "elapsed_seconds": float(elapsed),
-            })
-
-            LOGGER.info(
-                "%s run %d/%d -> best %.6e | feasible=%s | base_cost=%.3f | viol=%.3f | events=%d | %.2fs",
-                instance_name, run_number, args.runs,
-                float(result["best_fitness"]), "yes" if feasible_solution else "no",
-                float(base_cost), float(violation_total), run_events_count, elapsed,
-            )
+                LOGGER.info(
+                    "%s run %d/%d -> best %.6e | feasible=%s | base_cost=%.3f | viol=%.3f | events=%d | %.2fs",
+                    instance_name, run_number, args.runs,
+                    float(result["best_fitness"]), "yes" if feasible_solution else "no",
+                    float(base_cost), float(violation_total), run_events_count, elapsed,
+                )
 
     # --- global LIME aggregation ---
     if lime_rows_all:

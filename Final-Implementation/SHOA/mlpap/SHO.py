@@ -15,7 +15,7 @@ def _bounds_vector(bounds, dim: int) -> np.ndarray:
     return arr
 
 
-def SHO(pop: int, Max_iter: int, LB, UB, Dim: int, fobj):
+def SHO(pop: int, Max_iter: int, LB, UB, Dim: int, fobj, batch_eval=None):
     sea_horses = initialization(pop, Dim, UB, LB)
 
     sea_horses_fitness = np.zeros(pop, dtype=float)
@@ -24,10 +24,16 @@ def SHO(pop: int, Max_iter: int, LB, UB, Dim: int, fobj):
     convergence_curve = np.zeros(Max_iter, dtype=float)
     trajectories = np.zeros((pop, Max_iter), dtype=float)
 
-    for i in range(pop):
-        sea_horses_fitness[i] = fobj(sea_horses[i, :])
-        fitness_history[i, 0] = sea_horses_fitness[i]
-        population_history[i, :, 0] = sea_horses[i, :]
+    if batch_eval is not None:
+        sea_horses_fitness = batch_eval(sea_horses)
+        fobj.nfev = getattr(fobj, "nfev", 0) + pop
+        fitness_history[:, 0] = sea_horses_fitness
+        population_history[:, :, 0] = sea_horses
+    else:
+        for i in range(pop):
+            sea_horses_fitness[i] = fobj(sea_horses[i, :])
+            fitness_history[i, 0] = sea_horses_fitness[i]
+            population_history[i, :, 0] = sea_horses[i, :]
     trajectories[:, 0] = sea_horses[:, 0]
 
     sorted_indexes = np.argsort(sea_horses_fitness)
@@ -72,7 +78,11 @@ def SHO(pop: int, Max_iter: int, LB, UB, Dim: int, fobj):
         brB   = (1 - alpha) * (sea_horses_new1 - rB * elite) + alpha * sea_horses_new1
         sea_horses_new2 = np.where(r2[:, None] >= 0.1, brA, brB)
         sea_horses_new2 = np.clip(sea_horses_new2, lb_vec, ub_vec)
-        sea_horses_fitness1 = np.array([fobj(ind) for ind in sea_horses_new2], dtype=float)
+        if batch_eval is not None:
+            sea_horses_fitness1 = batch_eval(sea_horses_new2)
+            fobj.nfev = getattr(fobj, "nfev", 0) + pop
+        else:
+            sea_horses_fitness1 = np.array([fobj(ind) for ind in sea_horses_new2], dtype=float)
 
         # Reproductive behavior
         index = np.argsort(sea_horses_fitness1)
@@ -84,7 +94,11 @@ def SHO(pop: int, Max_iter: int, LB, UB, Dim: int, fobj):
         si = r3 * sea_horses_father + (1 - r3) * sea_horses_mother
 
         sea_horses_offspring = np.clip(si, lb_vec, ub_vec)
-        sea_horses_fitness2 = np.array([fobj(ind) for ind in sea_horses_offspring], dtype=float)
+        if batch_eval is not None:
+            sea_horses_fitness2 = batch_eval(sea_horses_offspring)
+            fobj.nfev = getattr(fobj, "nfev", 0) + half
+        else:
+            sea_horses_fitness2 = np.array([fobj(ind) for ind in sea_horses_offspring], dtype=float)
 
         # Selection
         sea_horses_fitness_all = np.concatenate([sea_horses_fitness1, sea_horses_fitness2])
